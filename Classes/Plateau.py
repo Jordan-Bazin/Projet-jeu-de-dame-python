@@ -25,7 +25,6 @@ class Plateau ():
 
     def getTableauFromJson(self):
         self.plateau = self.json_manager.getData()[0]['Plateau']
-        print(self.plateau)
         self.afficherPlateau()
 
     
