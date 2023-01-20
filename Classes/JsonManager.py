@@ -15,12 +15,4 @@ class JsonManager:
             
     def getData(self):
         return self.data
-        
-    def set(self, key, value):
-        self.data[key] = value
-        self.save()
-        
-    def delete(self, key):
-        del self.data[key]
-        self.save()
 

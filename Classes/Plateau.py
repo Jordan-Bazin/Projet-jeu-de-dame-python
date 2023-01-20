@@ -14,8 +14,6 @@ class Plateau ():
         else:
             print("Erreur")
             exit(1)
-
-        self.json_manager = JsonManager("Data/Parties.json")
            
     def afficherPlateau(self):
         for i in range(0, 11): # Affichage les chiffres en haut
