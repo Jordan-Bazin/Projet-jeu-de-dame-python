@@ -19,6 +19,10 @@ def menu():
         case "2":
             get_old_game()
         case "3":
+            send_mail()
+        case "4":
+            leave_game()
+
 
 def get_new_game():
     print("Nouvelle partie")
@@ -27,6 +31,12 @@ def get_new_game():
 def get_old_game():
     print("Ancienne partie")
 
+def send_mail():
+    print("A quel adresse voulez-vous envoyer le tableau des scores ?")
+
+def leave_game():
+    #Appeler la fonction pour sauvegarder s'il le veut 
+    menu()
 
 
 menu()
