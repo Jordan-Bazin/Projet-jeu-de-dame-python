@@ -39,6 +39,15 @@ class Plateau ():
                     print(str(self.plateau[i-1][j]) + " | ", end="")
             print("\n", end="")
 
+    def savePlateau(self, choix):
+        if(choix == 1):
+            self.idPartie = len(self.parties) - 1
+            print(self.idPartie)
+        elif(choix == 2):
+            for partie in self.parties:
+                if partie['idPartie'] == self.idPartie:
+                    partie['Plateau'] = self.plateau
+
 
     
 
