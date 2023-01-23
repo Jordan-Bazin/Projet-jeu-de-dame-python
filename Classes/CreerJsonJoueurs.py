@@ -1,0 +1,1 @@
+jsonJoueurs = open("TableauJoueurs.json", "r")
