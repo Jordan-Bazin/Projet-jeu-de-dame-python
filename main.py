@@ -1,4 +1,6 @@
-if __name__ == '__main__':
-    print("ALED")
+from Classes.Plateau import Plateau
 
-    print("Branche dev")
+
+if __name__ == '__main__':
+    p2 = Plateau(2, 1)
+    p2.afficherPlateau()
