@@ -9,7 +9,9 @@ if __name__ == '__main__':
     joueur1 = Joueur("Joueur 1", "X")
     #bouger un pion    
     test = p2.verifierManger(joueur1)
-    print(test)
-
+    if(test != []):
+        print("Joueur forcer de manger")
+    else:
+        print("Joueur doit déplacer un pion")
     #p2.bougerPion(joueur1, 6, 1, 4, 1)
     #p2.afficherPlateau()
