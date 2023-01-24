@@ -83,9 +83,16 @@ class Plateau ():
                         partie['tour'] = joueur2.getNom()
             self.json.save(self.parties)
 
+    # Déplace un pion sur le plateau et met la case d'origine à vide
     def bougerPion(self, x, y, nouvelleX, nouvelleY):
-        self.plateau[nouvelleX][nouvelleY] = self.plateau[x][y]
-        self.plateau[x][y] = " "
+        try:
+            if(self.plateau[x][y] == " "):
+                raise Exception("La case d'origine est vide")
+            self.plateau[nouvelleX][nouvelleY] = self.plateau[x][y]
+            self.plateau[x][y] = " "
+        except Exception as e:
+            print(e)
+            
         
             
 
