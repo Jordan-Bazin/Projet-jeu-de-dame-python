@@ -4,7 +4,7 @@ class Plateau ():
     def __init__(self, choix, idPartie = 0):
         self.json = JsonManager("Data/Parties.json")
         self.parties = self.json.getData()
-        print(self.parties)
+
         if(choix == 1): # Création d'un nouveau plateau à partir du template à l'id 0
             self.enCours = False
             for partie in self.parties:
@@ -78,20 +78,89 @@ class Plateau ():
                     partie['Plateau'] = self.plateau
                     partie['Vainqueur'] = vainqueur
                     if joueur1.getTour == True:
-                        partie['tour'] = joueur1.getNom()
+                        partie['tour'] = joueur1.nom
                     else:
-                        partie['tour'] = joueur2.getNom()
+                        partie['tour'] = joueur2.nom
             self.json.save(self.parties)
-
-    # Déplace un pion sur le plateau et met la case d'origine à vide
-    def bougerPion(self, x, y, nouvelleX, nouvelleY):
+    
+    # Vérifie si le pion peut être déplacé
+    def verifierDeplacement(self, joueur, x, y, nouvelleX, nouvelleY):
         try:
             if(self.plateau[x][y] == " "):
                 raise Exception("La case d'origine est vide")
-            self.plateau[nouvelleX][nouvelleY] = self.plateau[x][y]
-            self.plateau[x][y] = " "
+            elif(self.plateau[x][y] != joueur.pion):
+                raise Exception("Ce n'est pas votre pion")
+            elif(self.plateau[nouvelleX][nouvelleY] != " "):
+                raise Exception("La case d'arrivée n'est pas vide")
+            elif(x == nouvelleX and y == nouvelleY):
+                raise Exception("Vous ne pouvez pas rester sur la même case")
+            elif(x == nouvelleX or y == nouvelleY):
+                raise Exception("Vous ne pouvez déplacer votre pion qu'en diagonale")
+            elif(x != nouvelleX and y != nouvelleY):
+                if(x < nouvelleX):
+                    for i in range(x, nouvelleX):
+                        if(self.plateau[i][y] != " "):
+                            raise Exception("Il y a un pion sur le chemin")
+                else:
+                    for i in range(nouvelleX, x):
+                        if(self.plateau[i][y] != " "):
+                            raise Exception("Il y a un pion sur le chemin")
+            elif(x == nouvelleX and y != nouvelleY):
+                if(y < nouvelleY):
+                    for i in range(y, nouvelleY):
+                        if(self.plateau[x][i] != " "):
+                            raise Exception("Il y a un pion sur le chemin")
+                else:
+                    for i in range(nouvelleY, y):
+                        if(self.plateau[x][i] != " "):
+                            raise Exception("Il y a un pion sur le chemin")
+            elif(nouvelleX > len(self.plateau) or nouvelleY > len(self.plateau)):
+                raise Exception("Vous ne pouvez pas déplacer votre pion en dehors du plateau")
+            elif(self.plateau[nouvelleX][nouvelleY] == joueur.pion):
+                raise Exception("La case d'arrivée est déjà occupée par votre pion")
         except Exception as e:
             print(e)
+            return False
+        return True
+
+    # Vérifie si un pion peut mangé un autre pion
+    def verifierManger(self, joueur):
+        if(joueur.pion == "X"):
+            pionAdeverse = "O"
+        else:
+            pionAdeverse = "X"
+        listeAttaquePossible = []
+        attaquePossible = [[0,0],0]
+        try:
+            for i in range(len(self.plateau) - 1):
+                for j in range(len(self.plateau) - 1):
+                    if(self.plateau[i][j] == joueur.pion):
+                        if((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)): # verif deguelasse mais ça marche
+                            if(self.plateau[i+1][j+1] == pionAdeverse and self.plateau[i+2][j+2] == " "):
+                                attaquePossible = [[i+1, j+1], 1]
+                                if((i + 3 < 10 and j + 3 < 10) and (i + 4 < 10 and j + 4 < 10)): # verif deguelasse mais ça marche
+                                    if(self.plateau[i+3][j+3] == pionAdeverse and self.plateau[i+4][j+4] == " "):
+                                        attaquePossible = [[3+1, j+3], 2]
+                                        if((i + 5 < 10 and j + 5 < 10) and (i + 6 < 10 and j + 6 < 10)): # verif deguelasse mais ça marche
+                                            if(self.plateau[i+5][j+5] == pionAdeverse and self.plateau[i+6][j+6] == " "):
+                                                attaquePossible = [[i+5, j+5], 3]
+                        listeAttaquePossible.append(attaquePossible)
+        except Exception as e:
+            print(e)
+            return False
+        return listeAttaquePossible
+            
+    # Déplace un pion sur le plateau et met la case d'origine à vide
+    def bougerPion(self, joueur):
+        coord = input("Choisissez une case à jouer: ")
+        coord = coord.split(" ")
+        x = int(coord[0]) + 1
+        y = int(coord[1]) + 1
+        
+        if self.verifierDeplacement(joueur, x, y, x+1, y+1) == True:
+            self.plateau[x+1][y+1] = self.plateau[x][y]
+            self.plateau[x][y] = " "
+
             
         
             
