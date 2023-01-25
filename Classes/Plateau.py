@@ -2,28 +2,30 @@ from Classes.JsonManager import JsonManager
 
 class Plateau ():
     def __init__(self, choix, idPartie = 0):
-        self.json = JsonManager("Data/Parties.json")
-        self.parties = self.json.getData()
-
+        self.json = JsonManager("Data/Parties.json") # objet json pour instancier avec le path du fichier json des parties 
+        self.parties = self.json.getData() # Récupère les données des parties du fichier json
+        self.plateau = [] # Tableau du plateau
+        
         if(choix == 1): # Création d'un nouveau plateau à partir du template à l'id 0
             self.enCours = False
             for partie in self.parties:
                 if partie['idPartie'] == idPartie:
                     self.plateau = partie['Plateau']
-
+            if(self.plateau == []):
+                raise Exception("Le template à l'id 0 est introuvable")
         elif(choix == 2): #Génération du plateau à partir d'une partie existante
             self.enCours = True
             try:
                 for partie in self.parties:
-                    if partie['idPartie'] == idPartie:
+                    if partie['idPartie'] == idPartie: # Recherche de la partie à l'id indiqué
                         if partie['Vainqueur'] != "": # Si la partie est terminée
                             raise Exception("La partie est déjà terminée")
                         self.plateau = partie['Plateau']
-                #raise Exception("La partie n'existe pas, id introuvable") # Si l'id est introuvable
+                if(self.plateau == []):
+                    raise Exception("La partie n'existe pas, id introuvable")
             except Exception as e:
                 print(e)
                 exit(1)
-
         else:
             print("Erreur")
             exit(1)
@@ -57,7 +59,7 @@ class Plateau ():
     def savePlateau(self,joueur1, joueur2, vainqueur = ""):
         if(self.enCours == False): # Sauvegarde d'une nouvelle partie               
             idPartie = len(self.parties) - 1
-            jsonDataToSave = {
+            jsonDataToSave = { # Dictionnaire temporaire pour sauvegarder les données
                 "idPartie": idPartie,
                 "Joueur1": joueur1.getNom(),
                 "Joueur2": joueur2.getNom(),
@@ -69,11 +71,11 @@ class Plateau ():
             else:
                 jsonDataToSave = {"Tour" :joueur2.getNom()}
 
-            self.parties.append(jsonDataToSave)
-            self.json.save(self.parties)
+            self.parties.append(jsonDataToSave) # Ajout du dictionnaire temporaire dans la liste des parties
+            self.json.save(self.parties) # Sauvegarde dans le fichier json
             
         elif(self.enCours == True):  # Sauvegarde d'une partie existante
-            for partie in self.parties:
+            for partie in self.parties: # Remplace les valeurs changeantes dans le tableau des parties
                 if partie['idPartie'] == self.idPartie:
                     partie['Plateau'] = self.plateau
                     partie['Vainqueur'] = vainqueur
@@ -81,7 +83,7 @@ class Plateau ():
                         partie['tour'] = joueur1.nom
                     else:
                         partie['tour'] = joueur2.nom
-            self.json.save(self.parties)
+            self.json.save(self.parties) # Sauvegarde dans le fichier json
     
     # Vérifie si le pion peut être déplacé
     def verifierDeplacement(self, joueur, x, y, nouvelleX, nouvelleY):
