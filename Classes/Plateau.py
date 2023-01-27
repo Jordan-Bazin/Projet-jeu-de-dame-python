@@ -1,4 +1,6 @@
 from Classes.JsonManager import JsonManager
+from Classes.Joueur import Joueur
+from Classes.Colors import Colors
 
 class Plateau ():
     def __init__(self, choix, idPartie = 0):
@@ -105,8 +107,45 @@ class Plateau ():
             return False
         return True
 
+    def verifierMangerHaut(self, i, j):
+        if(joueur.pion == "X"):
+            pionAdeverse = "O"
+        else:
+            pionAdeverse = "X"
+        listeAttaquePossible = []
+        attaquePossible = []
+
+        if((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)): # verif deguelasse mais ça marche
+            if(self.plateau[i+1][j+1] == pionAdeverse and self.plateau[i+2][j+2] == " "): # verifie si on peut manger le pion en diagonale haut droite 
+                attaquePossible = [[i, j], 2, "++"]
+                if((i + 3 < 10 and j + 3 < 10) and (i + 4 < 10 and j + 4 < 10)): # verif deguelasse mais ça marche
+                    if(self.plateau[i+3][j+3] == pionAdeverse and self.plateau[i+4][j+4] == " "):
+                        attaquePossible = [[i, j], 4, "++"]
+                        if((i + 5 < 10 and j + 5 < 10) and (i + 6 < 10 and j + 6 < 10)): # verif deguelasse mais ça marche
+                            if(self.plateau[i+5][j+5] == pionAdeverse and self.plateau[i+6][j+6] == " "):
+                                attaquePossible = [[i, j], 6, "++"]
+        if(attaquePossible != []):
+            listeAttaquePossible.append(attaquePossible)
+        attaquePossible = []
+        if((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0)): # verif deguelasse mais ça marche
+            if(self.plateau[i+1][j-1] == pionAdeverse and self.plateau[i+2][j-2] == " "): # verifie si on peut manger le pion en diagonale haut gauche 
+                attaquePossible = [[i, j], 2, "+-"]
+                if((i + 3 < 10 and j - 3 >= 0) and (i + 4 < 10 and j - 4 >= 0)): # verif deguelasse mais ça marche
+                    if(self.plateau[i+3][j-3] == pionAdeverse and self.plateau[i+4][j-4] == " "):
+                        attaquePossible = [[i, j], 4, "+-"]
+                        if((i + 5 < 10 and j - 5 >= 0) and (i + 6 < 10 and j - 6 >= 0)): # verif deguelasse mais ça marche
+                                if(self.plateau[i+5][j-5] == pionAdeverse and self.plateau[i+6][j-6] == " "):
+                                    attaquePossible = [[i, j], 6, "+-"]
+        if(attaquePossible != []):
+            listeAttaquePossible.append(attaquePossible)
+        attaquePossible = []
+    def verifierMangerBas(self, x, y):
+        print("bas")    
+
     # Vérifie si un pion peut mangé un autre pion
     def verifierManger(self, joueur):
+        # faire 4 fonctions distinctes pour chaque direction de manger et les appeler a chaque deplacement
+
         if(joueur.pion == "X"):
             pionAdeverse = "O"
         else:
@@ -116,7 +155,7 @@ class Plateau ():
         try:
             for i in range(len(self.plateau)):
                 for j in range(len(self.plateau)):
-                    if(self.plateau[i][j] == joueur.pion):
+                    if(self.plateau[i][j] == joueur.pion and (joueur.pion == "X" or (joueur.pion == "*" or joueur.pion == "@"))):
                         if((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)): # verif deguelasse mais ça marche
                             if(self.plateau[i+1][j+1] == pionAdeverse and self.plateau[i+2][j+2] == " "): # verifie si on peut manger le pion en diagonale haut droite 
                                 attaquePossible = [[i, j], 2, "++"]
@@ -129,6 +168,19 @@ class Plateau ():
                         if(attaquePossible != []):
                             listeAttaquePossible.append(attaquePossible)
                         attaquePossible = []
+                        if((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0)): # verif deguelasse mais ça marche
+                            if(self.plateau[i+1][j-1] == pionAdeverse and self.plateau[i+2][j-2] == " "): # verifie si on peut manger le pion en diagonale haut gauche 
+                                attaquePossible = [[i, j], 2, "+-"]
+                                if((i + 3 < 10 and j - 3 >= 0) and (i + 4 < 10 and j - 4 >= 0)): # verif deguelasse mais ça marche
+                                    if(self.plateau[i+3][j-3] == pionAdeverse and self.plateau[i+4][j-4] == " "):
+                                        attaquePossible = [[i, j], 4, "+-"]
+                                        if((i + 5 < 10 and j - 5 >= 0) and (i + 6 < 10 and j - 6 >= 0)): # verif deguelasse mais ça marche
+                                            if(self.plateau[i+5][j-5] == pionAdeverse and self.plateau[i+6][j-6] == " "):
+                                                attaquePossible = [[i, j], 6, "+-"]
+                        if(attaquePossible != []):
+                            listeAttaquePossible.append(attaquePossible)
+                        attaquePossible = []
+                    elif(self.plateau[i][j] == joueur.pion and (joueur.pion == "O" or (joueur.pion == "*" or joueur.pion == "@"))):
                         if((i - 1 >= 0 and j + 1 < 10) and (i - 2 >= 0 and j + 2 < 10)): # verif deguelasse mais ça marche
                             if(self.plateau[i-1][j+1] == pionAdeverse and self.plateau[i-2][j+2] == " "): # verifie si on peut manger le pion en diagonale bas droite 
                                 attaquePossible = [[i, j], 2, "-+"]
@@ -150,18 +202,6 @@ class Plateau ():
                                         if((i - 5 >= 0 and j - 5 >= 0) and (i - 6 >= 0 and j - 6 >= 0)): # verif deguelasse mais ça marche
                                             if(self.plateau[i-5][j-5] == pionAdeverse and self.plateau[i-6][j-6] == " "):
                                                 attaquePossible = [[i, j], 6, "--"] 
-                        if(attaquePossible != []):
-                            listeAttaquePossible.append(attaquePossible)
-                        attaquePossible = []
-                        if((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0)): # verif deguelasse mais ça marche
-                            if(self.plateau[i+1][j-1] == pionAdeverse and self.plateau[i+2][j-2] == " "): # verifie si on peut manger le pion en diagonale haut gauche 
-                                attaquePossible = [[i, j], 2, "+-"]
-                                if((i + 3 < 10 and j - 3 >= 0) and (i + 4 < 10 and j - 4 >= 0)): # verif deguelasse mais ça marche
-                                    if(self.plateau[i+3][j-3] == pionAdeverse and self.plateau[i+4][j-4] == " "):
-                                        attaquePossible = [[i, j], 4, "+-"]
-                                        if((i + 5 < 10 and j - 5 >= 0) and (i + 6 < 10 and j - 6 >= 0)): # verif deguelasse mais ça marche
-                                            if(self.plateau[i+5][j-5] == pionAdeverse and self.plateau[i+6][j-6] == " "):
-                                                attaquePossible = [[i, j], 6, "+-"]
                         if(attaquePossible != []):
                             listeAttaquePossible.append(attaquePossible)
                         attaquePossible = []
@@ -210,7 +250,11 @@ class Plateau ():
                     nouvelleY = listeAttaquePlusForte[i][0][1] - listeAttaquePlusForte[i][1]
                     tab = [x, y, nouvelleX, nouvelleY]
                     listeCoordPossible.append(tab)
-                else : return "Erreur"
+                else : return "Erreur"  
+        colors = Colors()
+        print(colors.FAIL + u"\u2588" + colors.ENDC)  
+        for coord in listeCoordPossible:
+            self.plateau[coord[2]][coord[3]] = colors.FAIL + u"\u2588" + colors.ENDC
         return listeCoordPossible
             
     # Déplace un pion sur le plateau et met la case d'origine à vide
