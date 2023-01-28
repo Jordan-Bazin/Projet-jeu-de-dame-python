@@ -1,2 +1,6 @@
+from Classes.Plateau import Plateau
+
+
 if __name__ == '__main__':
-    print("ALED")
+    p2 = Plateau(2, 1)
+    p2.afficherPlateau()
