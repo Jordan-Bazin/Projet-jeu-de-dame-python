@@ -5,7 +5,7 @@ if __name__ == '__main__':
     p2 = Plateau(2,2)
     #p2.savePlateau(1)
     
-    joueur1 = Joueur("Joueur 1", "O")
+    joueur1 = Joueur("Joueur 1", "X")
     #bouger un pion    
     test = p2.verifierManger(joueur1)
     if(test != []):
