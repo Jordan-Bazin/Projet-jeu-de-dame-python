@@ -155,11 +155,14 @@ class Plateau (): # Classe pour gérer le plateau de jeu
 
             for coord in listeCoordPossible:
                 test = self.verifierMangerHaut(coord[2], coord[3], plateau, cpt+1)
-                if(test == None):
+                if(test == None and cpt == 0):
+                    tmpTab = [coord[2],coord[3], cpt]
+                    self.listePionManger.append(tmpTab)
+                    self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
+                elif(test == None):
                     tmpTab = [coord[2],coord[3], cpt]
                     self.listePionManger.append(tmpTab)
                 elif(cpt == 0):
-                    self.baseCoord.append([coord[0], coord[1]])
                     if(self.listePionManger != []):
                         self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
                     continue
@@ -211,11 +214,14 @@ class Plateau (): # Classe pour gérer le plateau de jeu
     
             for coord in listeCoordPossible:
                 test = self.verifierMangerBas(coord[2], coord[3], plateau, cpt+1)
-                if(test == None):
+                if(test == None and cpt == 0):
+                    tmpTab = [coord[2],coord[3], cpt]
+                    self.listePionManger.append(tmpTab)
+                    self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
+                elif(test == None):
                     tmpTab = [coord[2],coord[3], cpt]
                     self.listePionManger.append(tmpTab)
                 elif(cpt == 0):
-                    self.baseCoord.append([coord[0], coord[1]])
                     if(self.listePionManger != []):
                         self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
                     continue
@@ -298,11 +304,14 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                         print("erreur")
             for coord in listeCoordPossible:
                 test = self.verifierMangerDames(coord[2], coord[3], dame, plateau, cpt+1)
-                if(test == None):
+                if(test == None and cpt == 0):
+                    tmpTab = [coord[2],coord[3], cpt]
+                    self.listePionManger.append(tmpTab)
+                    self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
+                elif(test == None):
                     tmpTab = [coord[2],coord[3], cpt]
                     self.listePionManger.append(tmpTab)
                 elif(cpt == 0):
-                    self.baseCoord.append([coord[0], coord[1]])
                     if(self.listePionManger != []):
                         self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
                     continue
@@ -351,33 +360,30 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 listeAttaquePlusForte = []
                 listeAttaquePlusForte.append(listeAttaquePossible[i])
                 max = listeAttaquePossible[i][2]
-        
+
         colors = Colors()
-        for coord in listeAttaquePlusForte:
-            self.plateau[coord[0]][coord[1]] = colors.FAIL + u"\u2588" + colors.ENDC # Coloration des zones destinations possibles
-        res = []
-        [res.append(x) for x in self.baseCoord if x not in res] # suppression des doublons dans la liste des coordonnées de départ des pions qui peuvent manger
-        for coord in res:
-            if(self.plateau[coord[0]][coord[1]] == '%' or self.plateau[coord[0]][coord[1]] == '8'):
-                self.plateau[coord[0]][coord[1]] = colors.FAIL + joueur.dame + colors.ENDC #coloration des pions qui peuvent manger
-            else :
-                self.plateau[coord[0]][coord[1]] = colors.FAIL + joueur.pion + colors.ENDC
-        self.baseCoord = []
+        
+        for plateau in self.listeCopiePlateau: # affiche les attaques possibles si elles sont dans la liste d'attaque la plus forte
+            for attaque in listeAttaquePlusForte:
+                if(plateau[3] == attaque[0] and plateau[4] == attaque[1]):
+                    self.plateau[plateau[1]][plateau[2]] = colors.FAIL + plateau[0][plateau[1]][plateau[2]] + colors.ENDC #affiche le pion en rouge
+                    self.plateau[plateau[3]][plateau[4]] = colors.FAIL + u"\u2588" + colors.ENDC # affiche un carré rouge
+
         return listeAttaquePlusForte
             
     # Déplace un pion sur le plateau et met la case d'origine à vide
     def bougerPion(self, joueur, x, y, nouvelleX, nouvelleY):        
         if self.verifierDeplacement(joueur, x, y, nouvelleX, nouvelleY) == True:
-            print("aled")
+            self.plateau[nouvelleX][nouvelleY] = self.plateau[x][y]
+            self.plateau[x][y] = " "
 
     def manger(self, x, y , nouvelleX, nouvelleY):
         for plateau in self.listeCopiePlateau:
-                if(plateau[1] == x and plateau[2] == y and plateau[3] == nouvelleX and plateau[4] == nouvelleY):
-                    self.plateau = plateau[0]
-                    self.plateau[nouvelleX][nouvelleY] = plateau[0][x][y]
-                    self.plateau[x][y] = " "
-                    self.listeCopiePlateau = []
-                else: print("Ya problème")
+            if(plateau[1] == x and plateau[2] == y and plateau[3] == nouvelleX and plateau[4] == nouvelleY):
+                self.plateau = plateau[0]
+                self.plateau[nouvelleX][nouvelleY] = plateau[0][x][y]
+                self.plateau[x][y] = " "
+                self.listeCopiePlateau = []
 
             
 
