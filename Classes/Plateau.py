@@ -96,7 +96,7 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         try:
             if(self.plateau[x][y] == " "):
                 raise Exception("La case d'origine est vide")
-            elif(self.plateau[x][y] != joueur.pion):
+            elif(self.plateau[x][y] != joueur.pion or  self.plateau[x][y] != joueur.dame):
                 raise Exception("Ce n'est pas votre pion")
             elif(self.plateau[nouvelleX][nouvelleY] != " "):
                 raise Exception("La case d'arrivée n'est pas vide")
@@ -160,10 +160,11 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                     self.listePionManger.append(tmpTab)
                 elif(cpt == 0):
                     self.baseCoord.append([coord[0], coord[1]])
+                    if(self.listePionManger != []):
+                        self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
                     continue
             return coord[0], coord[1]
         else:
-            self.listeCopiePlateau.append(plateau)
             return None
 
     def verifierMangerBas(self, i, j, plateau, cpt = 0):
@@ -215,10 +216,11 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                     self.listePionManger.append(tmpTab)
                 elif(cpt == 0):
                     self.baseCoord.append([coord[0], coord[1]])
+                    if(self.listePionManger != []):
+                        self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
                     continue
             return coord[0], coord[1]
         else:
-            self.listeCopiePlateau.append(plateau)
             return None    
 
     def verifierMangerDames(self, i, j, dame, plateau = None, cpt = 0):
@@ -301,10 +303,11 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                     self.listePionManger.append(tmpTab)
                 elif(cpt == 0):
                     self.baseCoord.append([coord[0], coord[1]])
+                    if(self.listePionManger != []):
+                        self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
                     continue
             return coord[0], coord[1]
         else:
-            self.listeCopiePlateau.append(plateau)
             return None
 
 
@@ -365,10 +368,18 @@ class Plateau (): # Classe pour gérer le plateau de jeu
     # Déplace un pion sur le plateau et met la case d'origine à vide
     def bougerPion(self, joueur, x, y, nouvelleX, nouvelleY):        
         if self.verifierDeplacement(joueur, x, y, nouvelleX, nouvelleY) == True:
-            self.plateau[nouvelleX][nouvelleY] = self.plateau[x][y]
-            self.plateau[x][y] = " "
+            print("aled")
 
-            self.plateau = self.listeCopiePlateau
+    def manger(self, x, y , nouvelleX, nouvelleY):
+        for plateau in self.listeCopiePlateau:
+                if(plateau[1] == x and plateau[2] == y and plateau[3] == nouvelleX and plateau[4] == nouvelleY):
+                    self.plateau = plateau[0]
+                    self.plateau[nouvelleX][nouvelleY] = plateau[0][x][y]
+                    self.plateau[x][y] = " "
+                    self.listeCopiePlateau = []
+                else: print("Ya problème")
+
+            
 
             
         
