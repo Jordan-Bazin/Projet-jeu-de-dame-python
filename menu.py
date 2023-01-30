@@ -14,7 +14,7 @@ def menu():
         print("Tapez 1 pour lancer une nouvelle partie")
         print("Tapez 2 pour lancer une ancienne partie")
         print("Tapez 3 pour envoyer le tableau des scores par mail")
-        print("Tapez 4 pour quitter le jeu")
+        print("Tapez 4 pour sauvegarder/quitter le jeu")
         try:
             choix = int(input("Votre choix : "))
             if choix==1:
@@ -28,10 +28,10 @@ def menu():
                 break
             else:
                 print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
-                logging.error('Menu function: Invalid choice, a number between 1 and 4 must be entered')
+                logging.error('Menu function: choix invalide')
         except ValueError:
             print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
-            logging.error('Menu function: Invalid choice, a number between 1 and 4 must be entered')
+            logging.error('Menu function: choix invalide')
 
 
 def send_mail():
@@ -41,11 +41,11 @@ def send_mail():
         mail = input("A quel adresse voulez-vous envoyer le tableau des scores ? ")
         valid_email(mail)
         # send mail
-        logging.info('Send mail function: Mail sent to ' + mail)
+        logging.info('Mail sent to ' + mail)
         
     except ValueError:
         print("Adresse mail non valide, veuillez saisir une adresse mail valide")
-        logging.error("Send mail function: Invalid email address, a valid email address must be entered")
+        logging.error("Send mail function : adresse mail non valide")
         
 
 def get_old_game(id):
@@ -55,10 +55,10 @@ def get_old_game(id):
         Plateau #blabla
     except FileNotFoundError:
         print("Fichier non trouvé, veuillez saisir un nom de fichier valide")
-        logging.error("Get old game function: File not found, a valid file name must be entered")
+        logging.error("Fichier non trouvé, veuillez saisir un nom de fichier valide")
     except:
         print("Une erreur s'est produite lors de l'ouverture du fichier")
-        logging.error("Get old game function: Error opening file")
+        logging.error("Fichier non trouvé, veuillez saisir un nom de fichier valide")
 
 
 def get_old_game(id):
@@ -84,13 +84,13 @@ def leave_game():
                 #creation nouveau fichier où sauvegarder la partie
                 menu() #quitter le jeu - retour au menu
             elif choix==2: #pas de sauvegarde
-                menu()
+                exit()
             else:
                 logging.error("Choix non valide")
         except ValueError:
             logging.error("Choix non valide, veuillez saisir un nombre entre 1 et 2")
             logging.info("Vous avez quitter le jeu")
-
+            
 
 
 def valid_email(email):
