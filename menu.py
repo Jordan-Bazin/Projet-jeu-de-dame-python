@@ -4,14 +4,15 @@ from Classes.Plateau import Plateau
 from Classes.JsonManager import JsonManager 
 import re
 import logging
-
-
 import config_email
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email import encoders
 from email.mime.base import MIMEBase
+
+
+
 
 def menu():
     logging.basicConfig(filename='game_logs.log', level=logging.DEBUG,
@@ -42,6 +43,8 @@ def menu():
             logging.error('Menu function: choix invalide')
 
 
+
+
 #A tester - pas encore fonctionnel
 def read_file_content(file_path):
     json_manager = JsonManager(file_path)
@@ -68,8 +71,6 @@ def send_mail(mail_destinataire, sujet="Tableau des scores", message=""):
 
 
 
-
-
 def get_old_game(id):
     logging.basicConfig(filename='game_logs.log', level=logging.DEBUG,
                         format='%(asctime)s:%(levelname)s:%(message)s')
@@ -81,7 +82,6 @@ def get_old_game(id):
     except:
         print("Une erreur s'est produite lors de l'ouverture du fichier")
         logging.error("Fichier non trouvé, veuillez saisir un nom de fichier valide")
-
 
 
 
@@ -130,6 +130,7 @@ def leave_game():
             logging.error("Choix non valide, veuillez saisir un nombre entre 1 et 2")
             logging.info("Vous avez quitter le jeu")
             
+
 
 
 def valid_email(email):
