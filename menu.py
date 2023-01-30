@@ -1,7 +1,7 @@
 import sys
 import os
 from Classes.Plateau import Plateau
-
+from Classes.JsonManager import JsonManager 
 import re
 import logging
 
@@ -42,41 +42,19 @@ def menu():
             logging.error('Menu function: choix invalide')
 
 
+#A tester - pas encore fonctionnel
+def read_file_content(file_path):
+    json_manager = JsonManager(file_path)
+    return json_manager.getData()
 
-
-
-def send_mail():
-    logging.basicConfig(filename='game_logs.log', level=logging.DEBUG,
-                        format='%(asctime)s:%(levelname)s:%(message)s')
-    try:
-        mail = input("A quel adresse voulez-vous envoyer le tableau des scores ? ")
-        valid_email(mail)
-        contenu = input("Quel contenu voulez-vous envoyer ? ")
-        logging.info('Mail sent to ' + mail)
-        
-    except ValueError:
-        print("Adresse mail non valide, veuillez saisir une adresse mail valide")
-        logging.error("Send mail function : adresse mail non valide")
-        
-
-def envoyer_mail(mail_destinataire, sujet="", message="", nom_piece_jointe="", path_piece_jointe=""):
+def send_mail(mail_destinataire, sujet="Tableau des scores", message=""):
+    read_file_content()
     multipart_message = MIMEMultipart()
     multipart_message["Subject"] = sujet
     multipart_message["From"] = config_email.config_email
     multipart_message["To"] = mail_destinataire
 
     multipart_message.attach(MIMEText(message, "plain"))
-
-    if nom_piece_jointe and path_piece_jointe:
-        piece = open(path_piece_jointe, "rb")  # Ouverture du fichier
-        # Encodage de la pièce jointe en Base64
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload((piece).read())
-        encoders.encode_base64(part)
-        part.add_header('Content-Disposition',
-                        "piece; filename= %s" % nom_piece_jointe)
-        # Attache de la pièce jointe à l'objet "message"
-        multipart_message.attach(part)
 
     serveur_mail = smtplib.SMTP(
         config_email.config_server, config_email.config_server_port)
@@ -85,7 +63,6 @@ def envoyer_mail(mail_destinataire, sujet="", message="", nom_piece_jointe="", p
     serveur_mail.sendmail(config_email.config_email,
                           mail_destinataire, multipart_message.as_string())
     serveur_mail.quit()
-
 
 
 
