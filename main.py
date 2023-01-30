@@ -5,11 +5,11 @@ import copy
 if __name__ == '__main__':
     p2 = Plateau(2,2)
     #p2.savePlateau(1)
-
+    
     joueur1 = Joueur("Joueur 1", "O", "8")
     joueur2 = Joueur("Joueur 2", "X", "%")
       
-    test = p2.verifierManger(joueur2)
+    test = p2.verifierManger(joueur1)
     if(test != []):
         print(test)
         p2.afficherPlateau()

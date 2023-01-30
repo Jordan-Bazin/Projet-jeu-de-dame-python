@@ -266,42 +266,41 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         
         if(listeAttaquePossible != []):
             listeCoordPossible = []
-            if(listeAttaquePossible != []):
-                for i in range(len(listeAttaquePossible)):
-                    if(listeAttaquePossible[i][2] == "--"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] - listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] - listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY, "++"]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] - 1][listeAttaquePossible[i][0][1] - 1] = " "
-                    elif(listeAttaquePossible[i][2] == "-+"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] - listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] + listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY, "+-"]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] - 1][listeAttaquePossible[i][0][1] + 1] = " "
-                    elif(listeAttaquePossible[i][2] == "++"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] + listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] + listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY, "--"]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] + 1][listeAttaquePossible[i][0][1] + 1] = " "
-                    elif(listeAttaquePossible[i][2] == "+-"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] + listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] - listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY, "-+"]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] + 1][listeAttaquePossible[i][0][1] - 1] = " "
-                    else: 
-                        print("erreur")
+            for i in range(len(listeAttaquePossible)):
+                if(listeAttaquePossible[i][2] == "--"):
+                    x = listeAttaquePossible[i][0][0]
+                    y = listeAttaquePossible[i][0][1]
+                    nouvelleX = listeAttaquePossible[i][0][0] - listeAttaquePossible[i][1]
+                    nouvelleY = listeAttaquePossible[i][0][1] - listeAttaquePossible[i][1]
+                    tab = [x, y, nouvelleX, nouvelleY, "++"]
+                    listeCoordPossible.append(tab)
+                    plateau[listeAttaquePossible[i][0][0] - 1][listeAttaquePossible[i][0][1] - 1] = " "
+                elif(listeAttaquePossible[i][2] == "-+"):
+                    x = listeAttaquePossible[i][0][0]
+                    y = listeAttaquePossible[i][0][1]
+                    nouvelleX = listeAttaquePossible[i][0][0] - listeAttaquePossible[i][1]
+                    nouvelleY = listeAttaquePossible[i][0][1] + listeAttaquePossible[i][1]
+                    tab = [x, y, nouvelleX, nouvelleY, "+-"]
+                    listeCoordPossible.append(tab)
+                    plateau[listeAttaquePossible[i][0][0] - 1][listeAttaquePossible[i][0][1] + 1] = " "
+                elif(listeAttaquePossible[i][2] == "++"):
+                    x = listeAttaquePossible[i][0][0]
+                    y = listeAttaquePossible[i][0][1]
+                    nouvelleX = listeAttaquePossible[i][0][0] + listeAttaquePossible[i][1]
+                    nouvelleY = listeAttaquePossible[i][0][1] + listeAttaquePossible[i][1]
+                    tab = [x, y, nouvelleX, nouvelleY, "--"]
+                    listeCoordPossible.append(tab)
+                    plateau[listeAttaquePossible[i][0][0] + 1][listeAttaquePossible[i][0][1] + 1] = " "
+                elif(listeAttaquePossible[i][2] == "+-"):
+                    x = listeAttaquePossible[i][0][0]
+                    y = listeAttaquePossible[i][0][1]
+                    nouvelleX = listeAttaquePossible[i][0][0] + listeAttaquePossible[i][1]
+                    nouvelleY = listeAttaquePossible[i][0][1] - listeAttaquePossible[i][1]
+                    tab = [x, y, nouvelleX, nouvelleY, "-+"]
+                    listeCoordPossible.append(tab)
+                    plateau[listeAttaquePossible[i][0][0] + 1][listeAttaquePossible[i][0][1] - 1] = " "
+                else: 
+                    print("erreur")
             for coord in listeCoordPossible:
                 test = self.verifierMangerDames(coord[2], coord[3], dame, plateau, cpt+1)
                 if(test == None and cpt == 0):
@@ -323,6 +322,7 @@ class Plateau (): # Classe pour gérer le plateau de jeu
     # Vérifie si un pion peut mangé un autre pion
     def verifierManger(self, joueur):
         listeAttaquePossible = []
+        
         try:
             for i in range(len(self.plateau)):
                 for j in range(len(self.plateau)): # pour chaque case du plateau on vérifie si un pion peut manger un ou plusieurs pions
