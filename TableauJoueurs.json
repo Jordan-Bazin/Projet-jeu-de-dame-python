@@ -1,16 +1,1 @@
-{
-   "Joueur": [
-      {
-         "Nom": "Jordan",
-         "NombreVictoires": 0
-      },
-      {
-         "Nom": "Thomas",
-         "NombreVictoires": 0
-      },
-      {
-         "Nom": "Alexandre",
-         "NombreVictoires": 0
-      }
-   ]
-}
+[{"Nom": "AAAAAAAAAAAAH", "Bite": 5}, {"Nom": "Bob", "Bite": 60}]
