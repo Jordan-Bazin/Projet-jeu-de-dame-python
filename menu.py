@@ -70,21 +70,6 @@ def send_mail(mail_destinataire, sujet="Tableau des scores", message=""):
 
 
 
-
-def get_old_game(id):
-    logging.basicConfig(filename='game_logs.log', level=logging.DEBUG,
-                        format='%(asctime)s:%(levelname)s:%(message)s')
-    try:
-        Plateau #blabla
-    except FileNotFoundError:
-        print("Fichier non trouvé, veuillez saisir un nom de fichier valide")
-        logging.error("Fichier non trouvé, veuillez saisir un nom de fichier valide")
-    except:
-        print("Une erreur s'est produite lors de l'ouverture du fichier")
-        logging.error("Fichier non trouvé, veuillez saisir un nom de fichier valide")
-
-
-
 def get_old_game(id):
     logging.info("Ancienne partie")
     print("Quelle partie voulez-vous charger ? Donnez l'id de la partie")
