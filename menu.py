@@ -5,6 +5,14 @@ from Classes.Plateau import Plateau
 import re
 import logging
 
+
+import config_email
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email import encoders
+from email.mime.base import MIMEBase
+
 def menu():
     logging.basicConfig(filename='game_logs.log', level=logging.DEBUG,
                         format='%(asctime)s:%(levelname)s:%(message)s')
@@ -25,7 +33,7 @@ def menu():
                 send_mail()
             elif choix==4:
                 leave_game()
-                break
+                
             else:
                 print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
                 logging.error('Menu function: choix invalide')
@@ -34,19 +42,56 @@ def menu():
             logging.error('Menu function: choix invalide')
 
 
+
+
+
 def send_mail():
     logging.basicConfig(filename='game_logs.log', level=logging.DEBUG,
                         format='%(asctime)s:%(levelname)s:%(message)s')
     try:
         mail = input("A quel adresse voulez-vous envoyer le tableau des scores ? ")
         valid_email(mail)
-        # send mail
+        contenu = input("Quel contenu voulez-vous envoyer ? ")
         logging.info('Mail sent to ' + mail)
         
     except ValueError:
         print("Adresse mail non valide, veuillez saisir une adresse mail valide")
         logging.error("Send mail function : adresse mail non valide")
         
+
+def envoyer_mail(mail_destinataire, sujet="", message="", nom_piece_jointe="", path_piece_jointe=""):
+    multipart_message = MIMEMultipart()
+    multipart_message["Subject"] = sujet
+    multipart_message["From"] = config_email.config_email
+    multipart_message["To"] = mail_destinataire
+
+    multipart_message.attach(MIMEText(message, "plain"))
+
+    if nom_piece_jointe and path_piece_jointe:
+        piece = open(path_piece_jointe, "rb")  # Ouverture du fichier
+        # Encodage de la pièce jointe en Base64
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload((piece).read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition',
+                        "piece; filename= %s" % nom_piece_jointe)
+        # Attache de la pièce jointe à l'objet "message"
+        multipart_message.attach(part)
+
+    serveur_mail = smtplib.SMTP(
+        config_email.config_server, config_email.config_server_port)
+    serveur_mail.starttls()
+    serveur_mail.login(config_email.config_email, config_email.config_password)
+    serveur_mail.sendmail(config_email.config_email,
+                          mail_destinataire, multipart_message.as_string())
+    serveur_mail.quit()
+
+
+
+
+
+
+
 
 def get_old_game(id):
     logging.basicConfig(filename='game_logs.log', level=logging.DEBUG,
@@ -61,7 +106,24 @@ def get_old_game(id):
         logging.error("Fichier non trouvé, veuillez saisir un nom de fichier valide")
 
 
+
+
 def get_old_game(id):
+    logging.info("Ancienne partie")
+    print("Quelle partie voulez-vous charger ? Donnez l'id de la partie")
+    choix = input("Votre choix : ")
+    try:
+        #Lancement de la partie avec le bon id
+        Plateau #blabla
+    except FileNotFoundError:
+        print("Fichier non trouvé, veuillez saisir un nom de fichier valide")
+        logging.error("Fichier non trouvé")
+
+
+
+
+def get_new_game():
+    logging.info("Nouvelle partie")
     try:
         Plateau #blabla
     except FileNotFoundError:
@@ -69,9 +131,9 @@ def get_old_game(id):
     except:
         logging.error("Une erreur s'est produite lors de l'ouverture du fichier")
 
-def get_new_game():
-    logging.info("Nouvelle partie")
-Plateau
+
+
+
 
 def leave_game():
     logging.info("Bienvenue dans le jeu de dame")
