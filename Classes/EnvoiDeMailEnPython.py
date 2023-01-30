@@ -1,24 +1,20 @@
-"""
 import smtplib
+from email.mime.text import MIMEText
 
-sender_email = "childerikdegascogne@gmail.com"
-receiver_email = "nathan.gouarderes@hotmail.fr  "
-password = "Nathangou247"
-message = "Subject: Test Mail\n\nThis is a test email sent using Python."
+email_address = "childerikdegascogne@gmail.com"
+email_password = "Nathangou247"
+to_email = "childerikdegascogne@gmail.com"
+subject = "Subject Line"
+email_text = "This is the body of the email."
 
-server = smtplib.SMTP("smtp.gmail.com", 587)
-server.starttls()
-server.login(sender_email, password)
-server.sendmail(sender_email, receiver_email, message)
-server.quit()
-"""
-import smtplib
-server = smtplib.SMTP('smtp.gmail.com', 587)
-server.connect("smtp.example.com",465)
-#Ensuite, connectez-vous au serveur Gmail
-server.login("childerikdegascogne@mail.com", "Nathangou247")
-#Le message à envoyer
-msg = "Hello!" 
-#Envoyez le mail
-server.sendmail("childerikdegascogne@mail.com", "nathan.gouarderes@hotmail.fr", msg)
-server.quit()
+msg = MIMEText(email_text)
+msg["Subject"] = subject
+msg["From"] = email_address
+msg["To"] = to_email
+
+with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.ehlo()
+    smtp.login(email_address, email_password)
+    smtp.send_message(msg)
