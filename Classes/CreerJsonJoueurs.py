@@ -1,44 +1,39 @@
 import json
-import pprint
 
-jsonJoueurs = """[
-   {
-         "Nom": "Jordan",
-         "NombreVictoires": 0
-   },
-   {
-         "Nom": "Thomas",
-         "NombreVictoires": 0
-   },
-   {
-         "Nom": "Alexandre",
-         "NombreVictoires": 0
-   }
-]"""
-
-
-test = {"Bite":7}
-
-data = json.loads(jsonJoueurs)
-print("Le type de mon json est ", type(data)) 
-
-for element in data:
-      element.update(test)
-      if(element['Nom'] == "Jordan"):
-            print("AAAAAAAAAAH j'ai trouvé", element['Nom'], '\n')
-            print("Voici la personne qui vient de gagner : ",element, '\n')
-            element['NombreVictoires'] = element['NombreVictoires'] + 1
-      print(element)
+class Joueur:
+      def __init__(self, nom, nombreVictoires, joueursBattus, joue):
+            self.nom = nom
+            self.nombreVictoire = nombreVictoires
+            self.joueursBattus = joueursBattus
+            self.joue = joue
             
-fichier = open("TableauJoueurs.json", "r")
-print("\n\n Le fichier contient ",fichier.read() ,"\n\n")
-fichier.close()
+            
+            
+            
+            
+            
+            
+def ecrireJson():
+        i = 1
+        with open("TableauJoueurs.json") as fichier:
+            data = json.load(fichier)
+            test = data
+            for element in test:
 
-with open('TableauJoueurs.json', 'w') as fichier:
-      json.dump(data, fichier, indent=2)
+                if(element["Nom"] == "Bob"):
+                    element["NombreVictoires"] = element["NombreVictoires"] + 1
+                print("Les joueurs battus par " + element["Nom"],  "sont : " )
+                if(i == 1):
+                    if(element["Nom"] == "Bob"):
+                        element["JoueursBattus"] = element["JoueursBattus"] + ["Gohrien"]
 
+                    
+                        
+                
+                print("\n",element["JoueursBattus"], "\n")
+                
 
+        print("test vaut \n", test, "\n")
 
-print("Le fichier a été écrit")
-
-
+        with open("TableauJoueurs.json", "w") as fichier:
+            json.dump(test, fichier)

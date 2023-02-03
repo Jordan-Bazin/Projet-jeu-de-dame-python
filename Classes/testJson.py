@@ -38,35 +38,27 @@ class Joueurs:
         with open("TableauJoueurs.json", "w") as fichier:
             json.dump(test, fichier)
 
-
-
-
-    """
-    def compter_battus():
-        with open("TableauJoueurs.json") as fichier:
-            data = json.load(fichier)
-            print(len(data))
-            i = 0
-            nombre = 0
-            for element in data:
-                #print(element["Nom"], "a battu ", len(element["JoueursBattus"]), "joueurs")
-                #print(element["JoueursBattus"][i])
-                #i = i + 1
-                for i in range (0, len(element["JoueursBattus"])):
-                    print(element["JoueursBattus"][i]).count(nombre)
-                    print(nombre)
-    """
     def compter_battus():
         with open("TableauJoueurs.json") as fichier:
             data = json.load(fichier)
         for element in data:
             battus = element["JoueursBattus"]
+            dicJoueursBattus = {}
             for battu in battus:
-                nombre = battus.count(battu)
-                print("Le joueur", battu, "a été battu", nombre, "fois par", element["Nom"])        
+                if(battu in dicJoueursBattus.keys()):
+                    dicJoueursBattus [battu] += 1
+                else:
+                    dicJoueursBattus [battu] = 1
+            print(dicJoueursBattus)
+            for key in dicJoueursBattus:
+                print("Le joueur",key, "a ete battu", dicJoueursBattus[key], "fois par", element["Nom"])
+                
+                
+                #nombre = battus.count(battu)
+                #print("Le joueur", battu, "a été battu", nombre, "fois par", element["Nom"])        
             
     
 
 Joueurs.compter_battus()
-#ecrireJson()
+#Joueurs.ecrireJson()
 
