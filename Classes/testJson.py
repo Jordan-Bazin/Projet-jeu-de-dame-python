@@ -57,7 +57,15 @@ class Joueurs:
                 #nombre = battus.count(battu)
                 #print("Le joueur", battu, "a été battu", nombre, "fois par", element["Nom"])        
             
+    def test_compter_battus():
+    # Arrange
+        expected_output = "Le joueur Gorhien a ete battu 1 fois par Bob"
     
+    # Act
+        result = Joueurs.compter_battus()
+    
+    # Assert
+        assert result == expected_output
 
 Joueurs.compter_battus()
 #Joueurs.ecrireJson()
