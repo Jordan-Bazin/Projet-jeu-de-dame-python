@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+setup.cfg
+Classes/Colors.py
+Classes/Joueur.py
+Classes/JsonManager.py
+Classes/Plateau.py
+Classes/__init__.py
+Projet_jeu_de_dame_python.egg-info/PKG-INFO
+Projet_jeu_de_dame_python.egg-info/SOURCES.txt
+Projet_jeu_de_dame_python.egg-info/dependency_links.txt
+Projet_jeu_de_dame_python.egg-info/top_level.txt

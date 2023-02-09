@@ -1,5 +1,6 @@
 from Classes.Plateau import Plateau
 from Classes.Joueur import Joueur
+from termcolor import colored, cprint
 import copy
 
 if __name__ == '__main__':
@@ -9,11 +10,12 @@ if __name__ == '__main__':
     joueur1 = Joueur("Joueur 1", "O", "8")
     joueur2 = Joueur("Joueur 2", "X", "%")
       
-    test = p2.verifierManger(joueur1)
+    test = p2.verifierManger(joueur2)
     if(test != []):
         print(test)
         p2.afficherPlateau()
-        p2.manger(5,3,3,1)
+        p2.manger(6,2,4,4)
+        print("\n")
         p2.afficherPlateau()
     else:
         p2.afficherPlateau()
