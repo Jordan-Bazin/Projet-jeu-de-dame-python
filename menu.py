@@ -6,11 +6,13 @@ import re
 import logging
 import config_email
 import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from email import encoders
 from email.mime.base import MIMEBase
-
+import smtplib
+import json
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 
 
 
@@ -31,9 +33,11 @@ def menu():
             elif choix==2:
                 get_old_game()
             elif choix==3:
-                send_mail()
+                send_json_email()
             elif choix==4:
                 leave_game()
+            elif choix==5:
+                exit()
                 
             else:
                 print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
@@ -45,32 +49,10 @@ def menu():
 
 
 
-#A tester - pas encore fonctionnel
-def read_file_content(file_path):
-    json_manager = JsonManager(file_path)
-    return json_manager.getData()
-
-def send_mail(mail_destinataire, sujet="Tableau des scores", message=""):
-    read_file_content()
-    multipart_message = MIMEMultipart()
-    multipart_message["Subject"] = sujet
-    multipart_message["From"] = config_email.config_email
-    multipart_message["To"] = mail_destinataire
-
-    multipart_message.attach(MIMEText(message, "plain"))
-
-    serveur_mail = smtplib.SMTP(
-        config_email.config_server, config_email.config_server_port)
-    serveur_mail.starttls()
-    serveur_mail.login(config_email.config_email, config_email.config_password)
-    serveur_mail.sendmail(config_email.config_email,
-                          mail_destinataire, multipart_message.as_string())
-    serveur_mail.quit()
 
 
 
-
-def get_old_game(id):
+def get_old_game():
     logging.info("Ancienne partie")
     print("Quelle partie voulez-vous charger ? Donnez l'id de la partie")
     choix = input("Votre choix : ")
@@ -130,7 +112,44 @@ def valid_email(email):
     return e
 
 
+def send_json_email():
+    # Ouvrir et charger le fichier JSON
+    try:
+        json_file = input("Quel nom de fichier ?")
+        with open(json_file, 'r') as f:
+            json_data = json.load(f)
+    except FileNotFoundError:
+        print("Le fichier n'a pas été trouvé.")
+        return
+    except json.JSONDecodeError:
+        print("Le fichier n'est pas un fichier JSON valide.")
+        return
+
+    recipient_email = input("Entrez l'adresse mail du destinataire : ")
+
+    # Construire le message email
+    msg = MIMEMultipart()
+    source = "childerikdegascogne@gmail.com"
+    password = "trlxuhvuewfddheq"
+    msg['From'] = source 
+    msg['To'] = recipient_email
+    msg['Subject'] = "Fictif"
+    print(json_data)
+
+    # Ajouter le contenu du fichier JSON au message
+    json_attachment = MIMEApplication(json.dumps(json_data), _subtype='json')
+    json_attachment.add_header('Content-Disposition', 'attachment', filename=json_file)
+    msg.attach(json_attachment)
+
+    # Envoyer l'email
+    try:
+        smtp = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp.starttls()
+        smtp.login(source, password)
+        smtp.sendmail(source, recipient_email, msg.as_string())
+        print("E-mail envoyé avec succès!")
+    except smtplib.SMTPException as e:
+        print("Echec de l'envoi de l'e-mail :", e)
 
 
-
-
+send_json_email()
