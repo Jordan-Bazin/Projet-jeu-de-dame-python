@@ -1,5 +1,5 @@
 import json
-
+import random
 class Joueurs:
     def __init__(self, nom, nombreVictoires, joueursBattus, Joue):
         self.nom = nom
@@ -13,21 +13,32 @@ class Joueurs:
 #nom = input("Entrez votre nom : ")
 #nouveauxJoueurs = {"Nom": nom, "NombreVictoires": 0, "JoueursBattus": [], NombreDefaites: 0}
     
+    def afficherVictoires():
+        with open("TableauJoueurs.json") as fichier:
+            data = json.load(fichier)
+            for element in data:
+                print("Le joueur", element["Nom"], "a fait", element["NombreVictoires"], "victoires")
+    
+    
     def ecrireJson():
+        nombrePif = random.randint(0,1)
         i = 1
+        print(nombrePif)
         with open("TableauJoueurs.json") as fichier:
             data = json.load(fichier)
             test = data
             for element in test:
 
-                if(element["Nom"] == "Bob"):
+                if(element["Nom"] == "Bob" and nombrePif == 1):
                     element["NombreVictoires"] = element["NombreVictoires"] + 1
                 print("Les joueurs battus par " + element["Nom"],  "sont : " )
                 if(i == 1):
                     if(element["Nom"] == "Bob"):
                         element["JoueursBattus"] = element["JoueursBattus"] + ["Gohrien"]
 
-                    
+                if(element["Nom"] == "AAAAAAAAAAAAH" and nombrePif == 0):
+                    element["NombreVictoires"] += 1
+                    #print("Les joueurs battus par " + element["Nom"] + " sont : ")
                         
                 
                 print("\n",element["JoueursBattus"], "\n")
@@ -58,15 +69,23 @@ class Joueurs:
                 #print("Le joueur", battu, "a été battu", nombre, "fois par", element["Nom"])        
             
     def test_compter_battus():
-    # Arrange
+    
         expected_output = "Le joueur Gorhien a ete battu 1 fois par Bob"
     
-    # Act
+    
         result = Joueurs.compter_battus()
     
-    # Assert
+    
         assert result == expected_output
 
-Joueurs.compter_battus()
+Joueurs.afficherVictoires()
+#Joueurs.compter_battus()
 #Joueurs.ecrireJson()
 
+
+"""if(element["Nom"] == "Bob"):
+                    element["NombreVictoires"] = element["NombreVictoires"] + 1
+                print("Les joueurs battus par " + element["Nom"],  "sont : " )
+                if(i == 1):
+                    if(element["Nom"] == "Bob"):
+                        element["JoueursBattus"] = element["JoueursBattus"] + ["Gohrien"]"""
