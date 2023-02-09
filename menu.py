@@ -4,7 +4,6 @@ from Classes.Plateau import Plateau
 from Classes.JsonManager import JsonManager 
 import re
 import logging
-import config_email
 import smtplib
 from email import encoders
 from email.mime.base import MIMEBase
@@ -148,8 +147,10 @@ def send_json_email():
         smtp.login(source, password)
         smtp.sendmail(source, recipient_email, msg.as_string())
         print("E-mail envoyé avec succès!")
+        print("\n")
+        print("Retour au menu")
     except smtplib.SMTPException as e:
         print("Echec de l'envoi de l'e-mail :", e)
 
 
-send_json_email()
+menu()
