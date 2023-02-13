@@ -1,19 +1,21 @@
 from Classes.Plateau import Plateau
 from Classes.Joueur import Joueur
 import copy
+import menu
 
 if __name__ == '__main__':
+    #menu.menu()
     p2 = Plateau(2,2)
     #p2.savePlateau(1)
     
-    joueur1 = Joueur("Joueur 1", "O", "8")
-    joueur2 = Joueur("Joueur 2", "X", "%")
+    joueur1 = Joueur("Joueur 1", "O")
+    joueur2 = Joueur("Joueur 2", "X")
       
-    test = p2.verifierManger(joueur1)
+    test = p2.verifierManger(joueur2)
     if(test != []):
         print(test)
         p2.afficherPlateau()
-        p2.manger(5,3,3,1)
+        p2.manger(4,2,2,4)
         p2.afficherPlateau()
     else:
         p2.afficherPlateau()
