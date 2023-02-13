@@ -117,6 +117,14 @@ class Joueurs:
             fichier.truncate(0)
             fichier.seek(0)
             json.dump(data, fichier)
+            
+    def testerJson(self):
+        try:
+            with open(self.file_path) as fichier:
+                data = json.load(fichier)
+                return 1
+        except:
+            return 0
         
                 
 
@@ -130,6 +138,7 @@ else:
     #joueurs.ecrireJson()
     #joueurs.ecrireJoueurs()
     joueurs.victoireDynamique()
+    
     
 
 #joueurs.ecrireJoueurs()
