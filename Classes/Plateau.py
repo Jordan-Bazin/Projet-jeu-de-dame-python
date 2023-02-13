@@ -16,7 +16,8 @@ class Plateau (): # Classe pour gérer le plateau de jeu
             self.enCours = False
             for partie in self.parties:
                 if partie['idPartie'] == idPartie:
-                    self.plateau = partie['Plateau']
+                    plateau = copy.deepcopy(partie['Plateau']) # Copie du plateau de base pour ne pas le modifier
+                    self.plateau = plateau               
             if(self.plateau == []):
                 raise Exception("Le template à l'id 0 est introuvable")
         elif(choix == 2): #Génération du plateau à partir d'une partie existante
@@ -64,18 +65,18 @@ class Plateau (): # Classe pour gérer le plateau de jeu
 
     def savePlateau(self,joueur1, joueur2, vainqueur = ""):
         if(self.enCours == False): # Sauvegarde d'une nouvelle partie               
-            idPartie = len(self.parties) - 1
+            idPartie = len(self.parties)
             jsonDataToSave = { # Dictionnaire temporaire pour sauvegarder les données
                 "idPartie": idPartie,
-                "Joueur1": joueur1.getNom(),
-                "Joueur2": joueur2.getNom(),
+                "Joueur1": joueur1.nom,
+                "Joueur2": joueur2.nom,
                 "Vainqueur": vainqueur,
-                "Plateau": self.plateau
             }
-            if joueur1.getTour == True:
-                jsonDataToSave = {"Tour": joueur1.getNom()}
+            if joueur1.tour == True:
+                jsonDataToSave["Tour"] = joueur1.nom
             else:
-                jsonDataToSave = {"Tour" :joueur2.getNom()}
+                jsonDataToSave["Tour"] = joueur2.nom
+            jsonDataToSave["Plateau"] = self.plateau
 
             self.parties.append(jsonDataToSave) # Ajout du dictionnaire temporaire dans la liste des parties
             self.json.save(self.parties) # Sauvegarde dans le fichier json
@@ -85,15 +86,14 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 if partie['idPartie'] == self.idPartie:
                     partie['Plateau'] = self.plateau
                     partie['Vainqueur'] = vainqueur
-                    if joueur1.getTour == True:
+                    if joueur1.tour == True:
                         partie['tour'] = joueur1.nom
                     else:
                         partie['tour'] = joueur2.nom
             self.json.save(self.parties) # Sauvegarde dans le fichier json
     
     # Vérifie si le pion peut être déplacé
-    def verifierDeplacement(self, joueur, x, y, nouvelleX, nouvelleY):
-        
+    def verifierDeplacement(self, joueur, x, y, nouvelleX, nouvelleY):     
         try:
             if(self.plateau[x][y] == " "):
                 raise Exception("La case d'origine est vide")
@@ -284,4 +284,9 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion séléectionné : ").split()
         self.manger(int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)
 
-                
+    def checkDefaite(self, joueur):
+        for i in range(len(self.plateau)):
+            for j in range(len(self.plateau)):
+                if(self.plateau[i][j] == joueur.pion or self.plateau[i][j] == joueur.dame):
+                    return False
+        return True

@@ -83,9 +83,9 @@ def get_new_game():
 def jouer(plateau, joueur1, joueur2):
     print("")
     if(joueur1.tour == True):
-        print("C'est au tour de " + joueur1.nom + " de jouer")
+        print("Tour de " + joueur1.nom + ", il joue avec les "+joueur1.pion)
     else:
-        print("C'est au tour de " + joueur2.nom + " de jouer")
+        print("Tour de " + joueur2.nom + ", il joue avec les "+joueur2.pion)
     print("Taper 1 pour jouer votre tour")
     print("Taper 2 pour quitter et enregistrer la partie")
     print("Taper 3 pour abandonner la partie")
@@ -93,12 +93,13 @@ def jouer(plateau, joueur1, joueur2):
     if(choix == 1):
         jouer_tour(plateau, joueur1, joueur2)
     elif(choix == 2):
-        plateau.savePlateau(plateau, joueur1, joueur2)
+        plateau.savePlateau(joueur1, joueur2)
+        return 0
     elif(choix == 3):
         if(joueur1.tour == True):
-            abandonner(plateau, joueur1, joueur2, joueur2.nom)
+            plateau.savePlateau(joueur1, joueur2, joueur2.nom)
         else:
-            abandonner(plateau, joueur1, joueur2, joueur1.nom)
+            plateau.savePlateau(joueur1, joueur2, joueur1.nom)
     else:
         print("Choix non valide, veuillez saisir un nombre entre 1 et 3")
         logging.error('Menu function: choix invalide')
@@ -106,10 +107,18 @@ def jouer(plateau, joueur1, joueur2):
 
 def jouer_tour(plateau, joueur1, joueur2):
     if(joueur1.tour == True):
+        if(plateau.checkDefaite(joueur1)):
+            print("Fin de la partie, "+joueur2.nom+" a gagné !")
+            plateau.savePlateau(plateau, joueur1, joueur2, joueur2) # le 4e argument est le joueur qui a gagné
+            return 0
         joueur = joueur1
         joueur1.tour = False
         joueur2.tour = True
     else:
+        if(plateau.checkDefaite(joueur2)):
+            print("Fin de la partie, "+joueur1.nom+" a gagné !")
+            plateau.savePlateau(plateau, joueur1, joueur2, joueur1)
+            return 0
         joueur = joueur2
         joueur1.tour = True
         joueur2.tour = False
@@ -162,6 +171,9 @@ def valid_email(email):
         logging.error(e)
     return e
 
+def finPartie(plateau, joueur):
+    print("Fin de la partie, "+joueur.nom+" a gagné !")
+    
 
 
 
