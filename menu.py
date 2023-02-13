@@ -10,6 +10,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email import encoders
 from email.mime.base import MIMEBase
+from Classes.Plateau import Plateau
+from Classes.Joueur import Joueur
 
 
 
@@ -23,7 +25,6 @@ def menu():
         print("Tapez 1 pour lancer une nouvelle partie")
         print("Tapez 2 pour lancer une ancienne partie")
         print("Tapez 3 pour envoyer le tableau des scores par mail")
-        print("Tapez 4 pour sauvegarder/quitter le jeu")
         try:
             choix = int(input("Votre choix : "))
             if choix==1:
@@ -32,17 +33,12 @@ def menu():
                 get_old_game()
             elif choix==3:
                 send_mail()
-            elif choix==4:
-                leave_game()
-                
             else:
                 print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
                 logging.error('Menu function: choix invalide')
         except ValueError:
             print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
             logging.error('Menu function: choix invalide')
-
-
 
 
 #A tester - pas encore fonctionnel
@@ -68,33 +64,72 @@ def send_mail(mail_destinataire, sujet="Tableau des scores", message=""):
     serveur_mail.quit()
 
 
-
-
 def get_old_game(id):
     logging.info("Ancienne partie")
     print("Quelle partie voulez-vous charger ? Donnez l'id de la partie")
-    choix = input("Votre choix : ")
-    try:
-        #Lancement de la partie avec le bon id
-        Plateau #blabla
-    except FileNotFoundError:
-        print("Fichier non trouvé, veuillez saisir un nom de fichier valide")
-        logging.error("Fichier non trouvé")
-
-
-
+    choix = input("ID : ")
+    plateau = Plateau(2,id)
+    jouer(plateau)
 
 def get_new_game():
     logging.info("Nouvelle partie")
-    try:
-        Plateau #blabla
-    except FileNotFoundError:
-        logging.error("Fichier non trouvé, veuillez saisir un nom de fichier valide")
-    except:
-        logging.error("Une erreur s'est produite lors de l'ouverture du fichier")
+    plateau = Plateau(1)
+    joueur1 = input("Entrer le nom du premier joueur :")
+    joueur2 = input("Entrer le nom du deuxième joueur :")
+    joueur1 = Joueur(joueur1, "X")
+    joueur2 = Joueur(joueur2, "O")
+    jouer(plateau, joueur1, joueur2)
 
+def jouer(plateau, joueur1, joueur2):
+    print("")
+    if(joueur1.tour == True):
+        print("C'est au tour de " + joueur1.nom + " de jouer")
+    else:
+        print("C'est au tour de " + joueur2.nom + " de jouer")
+    print("Taper 1 pour jouer votre tour")
+    print("Taper 2 pour quitter et enregistrer la partie")
+    print("Taper 3 pour abandonner la partie")
+    choix = int(input("Votre choix : "))
+    if(choix == 1):
+        jouer_tour(plateau, joueur1, joueur2)
+    elif(choix == 2):
+        plateau.savePlateau(plateau, joueur1, joueur2)
+    elif(choix == 3):
+        if(joueur1.tour == True):
+            abandonner(plateau, joueur1, joueur2, joueur2.nom)
+        else:
+            abandonner(plateau, joueur1, joueur2, joueur1.nom)
+    else:
+        print("Choix non valide, veuillez saisir un nombre entre 1 et 3")
+        logging.error('Menu function: choix invalide')
+        jouer(plateau, joueur1, joueur2)
 
+def jouer_tour(plateau, joueur1, joueur2):
+    if(joueur1.tour == True):
+        joueur = joueur1
+        joueur1.tour = False
+        joueur2.tour = True
+    else:
+        joueur = joueur2
+        joueur1.tour = True
+        joueur2.tour = False
 
+    listePionAManger = plateau.verifierManger(joueur)
+    if(listePionAManger != []):
+        plateau.afficherPlateau()
+        x, y = input("Entrer les coordonnées de départ du pion à déplacer : ").split()
+        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion séléectionné : ").split()
+        plateau.manger(int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)
+        plateau.afficherPlateau()
+        jouer(plateau, joueur1, joueur2)
+    else:
+        plateau.afficherPlateau()
+        print("Vous ne pouvez pas manger, vous devez donc déplacer un pion")
+        x, y = input("Entrer les coordonnées de départ du pion à déplacer : ").split()
+        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion séléectionné : ").split()
+        plateau.bougerPion(joueur,int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)
+        plateau.afficherPlateau()
+        jouer(plateau, joueur1, joueur2)
 
 
 def leave_game():
@@ -115,8 +150,6 @@ def leave_game():
             logging.error("Choix non valide, veuillez saisir un nombre entre 1 et 2")
             logging.info("Vous avez quitter le jeu")
             
-
-
 
 def valid_email(email):
     try:
