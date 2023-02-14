@@ -49,10 +49,10 @@ def menu():
                 print("Merci d'avoir joué, à bientôt !")
                 sys.exit()
             else:
-                print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
+                print("Choix non valide, veuillez saisir un nombre entre 1 et 5")
                 logging.error('Menu function: choix invalide')
         except ValueError:
-            print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
+            print("Choix non valide, veuillez saisir un nombre entre 1 et 5")
             logging.error('Menu function: choix invalide')
 
 def tableauScore():
@@ -196,8 +196,3 @@ def valid_email(email):
     except Exception as e:
         logging.error(e)
     return e
-
-
-
-
-
