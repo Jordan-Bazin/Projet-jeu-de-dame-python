@@ -2,7 +2,6 @@ from Classes.JsonManager import JsonManager
 from Classes.Joueur import Joueur
 from Classes.Colors import Colors
 import copy
-
 class Plateau (): # Classe pour gérer le plateau de jeu
     def __init__(self, choix, idPartie = 0):
         self.json = JsonManager("Data/Parties.json") # objet json pour instancier avec le path du fichier json des parties 
