@@ -2,6 +2,7 @@ import json
 import random
 import os
 
+
 class Joueurs:
     absolute_path = os.path.dirname(os.path.abspath(__file__))
     file_path = absolute_path + '\TableauJoueurs.json'
