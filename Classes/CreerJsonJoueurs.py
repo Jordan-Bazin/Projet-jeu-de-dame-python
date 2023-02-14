@@ -5,12 +5,18 @@ import os
 
 class Joueurs:
     absolute_path = os.path.dirname(os.path.abspath(__file__))
+    absolutePathParties = os.path.dirname(os.path.abspath(__file__))
+    filePathParties = 'Data\Parties.json'
     file_path = absolute_path + '\TableauJoueurs.json'
+    
+    
     def __init__(self, nom, nombreVictoires, joueursBattus, Joue):
         self.nom = nom
         self.nombreVictoires = nombreVictoires
         self.joueursBattus = joueursBattus
         self.joue = Joue
+        #self.jsonData = JsonManager('Data/Parties.json')
+        
     
     def description(self):
         print("Le joueur ", self.nom, "a gagné ", self.nombreVictoires, "fois et a battu ", self.joueursBattus)
@@ -55,8 +61,6 @@ class Joueurs:
                     
                     print("\n",element["JoueursBattus"], "\n")
                 
-
-                    print("test vaut \n", test, "\n")
         except:
             print("Le fichier n'existe pas")
 
@@ -127,7 +131,58 @@ class Joueurs:
         except:
             return 0
         
+        
+    def afficherPartiesJson(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                vainquer = element["Vainqueur"]
+                tableau = element
+                idPartie = element["idPartie"]
+                joueur1 = element["Joueur1"]
+                joueur2 = element["Joueur2"]
+                print(vainquer)
+            print("\n\n Le tableau de parties vaut : \n", tableau, "\n\n")
+            print("\n l'id de la partie vaut : \n", idPartie, "\n\n")
+            print("\n le joueur 1 vaut : \n", joueur1, "\n\n")
+            print("\n le joueur 2 vaut : \n", joueur2, "\n\n")
+            
+    def getIdPartie(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                idPartie = element["idPartie"]
+            return idPartie
+        
+    def getJoueur1(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                joueur1 = element["Joueur1"]
+            return joueur1
+        
+    def getIdJoueur2(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                joueur2 = element["Joueur2"]
+            return joueur2
+        
+    def getVainqueur(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                vainqueur = element["Vainqueur"]
+            return vainqueur
                 
+    def tableauScore(self):
+        for partie in self.jsonData:
+            print(partie)
+            joueurs.afficherVictoires()
+            #joueurs.compter_battus()
+            #joueurs.ecrireJson()
+            #joueurs.ecrireJoueurs()
+            #joueurs.victoireDynamique()
 
 joueurs = Joueurs("nom", 0, "joueursBattus", True)
 
@@ -138,11 +193,11 @@ else:
     #joueurs.compter_battus()
     #joueurs.ecrireJson()
     #joueurs.ecrireJoueurs()
-    joueurs.victoireDynamique()
+    #joueurs.victoireDynamique()
+    #joueurs.afficherPartiesJson()
+    print(joueurs.getIdPartie())
+    print(joueurs.getJoueur1())
+    print(joueurs.getIdJoueur2())
+    print(joueurs.getVainqueur())
+    print("Le fichier existe")
     
-    
-
-#joueurs.ecrireJoueurs()
-#joueurs.afficherVictoires()
-#Joueurs.compter_battus()
-#joueurs.ecrireJson()
