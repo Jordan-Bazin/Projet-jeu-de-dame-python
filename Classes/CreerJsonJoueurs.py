@@ -19,6 +19,35 @@ class Joueurs:
     
     def description(self):
         print("Le joueur ", self.nom, "a gagné ", self.nombreVictoires, "fois et a battu ", self.joueursBattus)
+        
+    def getIdPartie(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                idPartie = element["idPartie"]
+            return idPartie
+        
+    def getJoueur1(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                joueur1 = element["Joueur1"]
+            return joueur1
+        
+    def getIdJoueur2(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                joueur2 = element["Joueur2"]
+            return joueur2
+        
+    def getVainqueur(self):
+        with open(self.filePathParties) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                vainqueur = element["Vainqueur"]
+            return vainqueur
+                
 
     def testerJson(self):
         if(os.path.exists(self.file_path)):
@@ -146,34 +175,7 @@ class Joueurs:
             print("\n le joueur 1 vaut : \n", joueur1, "\n\n")
             print("\n le joueur 2 vaut : \n", joueur2, "\n\n")
             
-    def getIdPartie(self):
-        with open(self.filePathParties) as fichier:
-            data = json.load(fichier)
-            for element in data:
-                idPartie = element["idPartie"]
-            return idPartie
-        
-    def getJoueur1(self):
-        with open(self.filePathParties) as fichier:
-            data = json.load(fichier)
-            for element in data:
-                joueur1 = element["Joueur1"]
-            return joueur1
-        
-    def getIdJoueur2(self):
-        with open(self.filePathParties) as fichier:
-            data = json.load(fichier)
-            for element in data:
-                joueur2 = element["Joueur2"]
-            return joueur2
-        
-    def getVainqueur(self):
-        with open(self.filePathParties) as fichier:
-            data = json.load(fichier)
-            for element in data:
-                vainqueur = element["Vainqueur"]
-            return vainqueur
-                
+    
     def tableauScore(self):
         for partie in self.jsonData:
             print(partie)
