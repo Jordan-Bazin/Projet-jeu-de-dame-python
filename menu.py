@@ -14,6 +14,7 @@ from email.mime.base import MIMEBase
 from email.mime.application import MIMEApplication
 from Classes.Plateau import Plateau
 from Classes.Joueur import Joueur
+from Classes.CreerJsonJoueurs import Score
 
 
 
@@ -27,7 +28,8 @@ def menu():
         print("Tapez 1 pour lancer une nouvelle partie")
         print("Tapez 2 pour lancer une ancienne partie")
         print("Tapez 3 pour envoyer le tableau des scores par mail")
-        print("Tapez 4 pour quitter le jeu sans sauvergarder")
+        print("Tapez 4 pour envoyer le tableau des scores par mail")
+        print("Tapez 5 pour quitter le jeu sans sauvergarder")
         try:
             choix = int(input("Votre choix : "))
             if choix==1:
@@ -37,6 +39,8 @@ def menu():
             elif choix==3:
                 send_json_email()
             elif choix==4:
+                tableauScore()
+            elif choix==5:
                 logging.info('Menu function: Quitting the game')
                 print("Merci d'avoir joué, à bientôt !")
                 sys.exit()
@@ -46,6 +50,10 @@ def menu():
         except ValueError:
             print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
             logging.error('Menu function: choix invalide')
+
+def tableauScore():
+    logging.info("Tableau des scores")
+    score = Score()
 
 def send_json_email():
     # Ouvrir et charger le fichier JSON

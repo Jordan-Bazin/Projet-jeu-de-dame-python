@@ -1,23 +1,31 @@
 import json
 import random
 import os
+from Classes.JsonManager import JsonManager
 
-
-class Joueurs:
-    absolute_path = os.path.dirname(os.path.abspath(__file__))
-    absolutePathParties = os.path.dirname(os.path.abspath(__file__))
-    filePathParties = 'Data\Parties.json'
-    file_path = absolute_path + '\TableauJoueurs.json'
+class Score:
+    #absolute_path = os.path.dirname(os.path.abspath(__file__))
+    #absolutePathParties = os.path.dirname(os.path.abspath(__file__))
+    #filePathParties = 'Data\Parties.json'
+    #file_path = absolute_path + '\TableauJoueurs.json'
     
-    
-    def __init__(self, nom, nombreVictoires, joueursBattus, Joue):
+    def __init__(self, nom, pion):
         self.nom = nom
-        self.nombreVictoires = nombreVictoires
-        self.joueursBattus = joueursBattus
-        self.joue = Joue
-        #self.jsonData = JsonManager('Data/Parties.json')
+        self.nombreVictoires = 0
+        self.joueursBattus = []
+        self.pion = pion
+        self.jsonData = JsonManager('Data/Parties.json')
+        self.parties = self.jsonData.data
+        if(pion == "X"):
+            self.dame = "%"
+            self.tour = False
+        else:
+            self.dame = "8"
+            self.tour = True
         
-    
+    def score(self):
+        print("aled")
+
     def description(self):
         print("Le joueur ", self.nom, "a gagné ", self.nombreVictoires, "fois et a battu ", self.joueursBattus)
 
@@ -178,26 +186,26 @@ class Joueurs:
     def tableauScore(self):
         for partie in self.jsonData:
             print(partie)
-            joueurs.afficherVictoires()
+            #joueurs.afficherVictoires()
             #joueurs.compter_battus()
             #joueurs.ecrireJson()
             #joueurs.ecrireJoueurs()
             #joueurs.victoireDynamique()
 
-joueurs = Joueurs("nom", 0, "joueursBattus", True)
+#joueurs = Joueurs("nom", "x")
 
-if (joueurs.testerJson() == 0):
-    print("Le fichier n'existe pas")
-else:
+#if (joueurs.testerJson() == 0):
+    #print("Le fichier n'existe pas")
+#else:
     #joueurs.afficherVictoires()
     #joueurs.compter_battus()
     #joueurs.ecrireJson()
     #joueurs.ecrireJoueurs()
     #joueurs.victoireDynamique()
     #joueurs.afficherPartiesJson()
-    print(joueurs.getIdPartie())
-    print(joueurs.getJoueur1())
-    print(joueurs.getIdJoueur2())
-    print(joueurs.getVainqueur())
-    print("Le fichier existe")
+    #print(joueurs.getIdPartie())
+    #print(joueurs.getJoueur1())
+    #print(joueurs.getIdJoueur2())
+    #print(joueurs.getVainqueur())
+    #print("Le fichier existe")
     

@@ -106,8 +106,6 @@ class Plateau (): # Classe pour gérer le plateau de jeu
     
     # Vérifie si le pion peut être déplacé
     def verifierDeplacement(self, joueur, x, y, nouvelleX, nouvelleY):
-        print("nouvelleY :"+str(nouvelleY)+" y : "+str(y))
-
         try:
             if(self.plateau[x][y] == " "):
                 raise Exception("La case d'origine est vide")
