@@ -90,7 +90,7 @@ def send_json_email():
     password = "trlxuhvuewfddheq"
     msg['From'] = source 
     msg['To'] = recipient_email
-    msg['Subject'] = "Fictif"
+    msg['Subject'] = "Tableau des scores"
     print(json_data)
 
     # Ajouter le contenu du fichier JSON au message
