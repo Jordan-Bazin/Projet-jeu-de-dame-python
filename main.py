@@ -1,11 +1,10 @@
 from Classes.Plateau import Plateau
+from Classes.Joueur import Joueur
+import copy
+import menu
 
 
 if __name__ == '__main__':
+    menu.menu()
     
-    p2 = Plateau(2,2)
-    p2.afficherPlateau()
-    #p2.savePlateau(1)
-    p2.bougerPion(3,0,4,1)
-    print(" ")
-    p2.afficherPlateau()
+
