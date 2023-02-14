@@ -10,11 +10,10 @@ class Joueurs:
     file_path = absolute_path + '\TableauJoueurs.json'
     
     
-    def __init__(self, nom, nombreVictoires, joueursBattus, Joue):
+    def __init__(self, nom):
         self.nom = nom
-        self.nombreVictoires = nombreVictoires
-        self.joueursBattus = joueursBattus
-        self.joue = Joue
+        self.nombreVictoires = 0
+        self.joueursBattus = []
         #self.jsonData = JsonManager('Data/Parties.json')
         
     
@@ -184,7 +183,7 @@ class Joueurs:
             #joueurs.ecrireJoueurs()
             #joueurs.victoireDynamique()
 
-joueurs = Joueurs("nom", 0, "joueursBattus", True)
+joueurs = Joueurs("nom")
 
 if (joueurs.testerJson() == 0):
     print("Le fichier n'existe pas")
