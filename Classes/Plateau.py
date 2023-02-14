@@ -16,7 +16,12 @@ class Plateau (): # Classe pour gérer le plateau de jeu
             self.enCours = False
             for partie in self.parties:
                 if partie['idPartie'] == idPartie:
-                    self.plateau = partie['Plateau']
+                    plateau = copy.deepcopy(partie['Plateau']) # Copie du plateau de base pour ne pas le modifier
+                    self.plateau = plateau
+                    joueur1 = input("Entrer le nom du premier joueur :")
+                    joueur2 = input("Entrer le nom du deuxième joueur :")
+                    self.joueur1 = Joueur(joueur1, "X")
+                    self.joueur2 = Joueur(joueur2, "O")              
             if(self.plateau == []):
                 raise Exception("Le template à l'id 0 est introuvable")
         elif(choix == 2): #Génération du plateau à partir d'une partie existante
@@ -27,6 +32,14 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                         if partie['Vainqueur'] != "": # Si la partie est terminée
                             raise Exception("La partie est déjà terminée")
                         self.plateau = partie['Plateau']
+                        self.joueur1 = Joueur(partie['Joueur1'], "X")
+                        self.joueur2 = Joueur(partie['Joueur2'], "O")
+                        if partie['Tour'] == self.joueur1.nom:
+                            self.joueur1.tour = True
+                            self.joueur2.tour = False
+                        else:
+                            self.joueur1.tour = False
+                            self.joueur2.tour = True
                 if(self.plateau == []):
                     raise Exception("La partie n'existe pas, id introuvable")
             except Exception as e:
@@ -62,20 +75,20 @@ class Plateau (): # Classe pour gérer le plateau de jeu
             print("\n", end="")
 
 
-    def savePlateau(self,joueur1, joueur2, vainqueur = ""):
+    def savePlateau(self,vainqueur = ""):
         if(self.enCours == False): # Sauvegarde d'une nouvelle partie               
-            idPartie = len(self.parties) - 1
+            idPartie = len(self.parties)
             jsonDataToSave = { # Dictionnaire temporaire pour sauvegarder les données
                 "idPartie": idPartie,
-                "Joueur1": joueur1.getNom(),
-                "Joueur2": joueur2.getNom(),
+                "Joueur1": self.joueur1.nom,
+                "Joueur2": self.joueur2.nom,
                 "Vainqueur": vainqueur,
-                "Plateau": self.plateau
             }
-            if joueur1.getTour == True:
-                jsonDataToSave = {"Tour": joueur1.getNom()}
+            if self.joueur1.tour == True:
+                jsonDataToSave["Tour"] = self.joueur1.nom
             else:
-                jsonDataToSave = {"Tour" :joueur2.getNom()}
+                jsonDataToSave["Tour"] = self.joueur2.nom
+            jsonDataToSave["Plateau"] = self.plateau
 
             self.parties.append(jsonDataToSave) # Ajout du dictionnaire temporaire dans la liste des parties
             self.json.save(self.parties) # Sauvegarde dans le fichier json
@@ -85,10 +98,10 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 if partie['idPartie'] == self.idPartie:
                     partie['Plateau'] = self.plateau
                     partie['Vainqueur'] = vainqueur
-                    if joueur1.getTour == True:
-                        partie['tour'] = joueur1.nom
+                    if self.joueur1.tour == True:
+                        partie['tour'] = self.joueur1.nom
                     else:
-                        partie['tour'] = joueur2.nom
+                        partie['tour'] = self.joueur2.nom
             self.json.save(self.parties) # Sauvegarde dans le fichier json
     
     # Vérifie si le pion peut être déplacé
@@ -96,7 +109,7 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         try:
             if(self.plateau[x][y] == " "):
                 raise Exception("La case d'origine est vide")
-            elif(self.plateau[x][y] != joueur.pion or  self.plateau[x][y] != joueur.dame):
+            elif(self.plateau[x][y] != joueur.pion):
                 raise Exception("Ce n'est pas votre pion")
             elif(self.plateau[nouvelleX][nouvelleY] != " "):
                 raise Exception("La case d'arrivée n'est pas vide")
@@ -104,133 +117,21 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 raise Exception("Vous ne pouvez pas rester sur la même case")
             elif(x == nouvelleX or y == nouvelleY):
                 raise Exception("Vous ne pouvez déplacer votre pion qu'en diagonale")
+            elif(joueur.pion == "O" and nouvelleX > x):
+                raise Exception("Vous ne pouvez pas déplacer un pion O vers le bas")
+            elif(joueur.pion == "X" and nouvelleX < x):
+                raise Exception("Vous ne pouvez pas déplacer un pion X vers le haut")
+            elif(abs(nouvelleX - x) > 1 or abs(nouvelleY - y) > 1):
+                raise Exception("Vous ne pouvez pas déplacer votre pion de plus d'une case")
             elif(nouvelleX > len(self.plateau) or nouvelleY > len(self.plateau)):
                 raise Exception("Vous ne pouvez pas déplacer votre pion en dehors du plateau")
         except Exception as e:
             print(e)
             return False
-        return True
+        return True   
 
-    def verifierMangerHaut(self, i, j, plateau, cpt = 0):
-        pionAdverse = 'O'
-        dameAdverse = '8'
-        listeAttaquePossible = []
-        attaquePossible = []
-
-        if((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)): # verif deguelasse mais ça marche
-            if((self.plateau[i+1][j+1] == pionAdverse or self.plateau[i+1][j+1] == dameAdverse) and self.plateau[i+2][j+2] == " "): # verifie si on peut manger le pion en diagonale haut droite 
-                attaquePossible = [[i, j], 2, "++"]
-        if(attaquePossible != []):
-            listeAttaquePossible.append(attaquePossible)
-        attaquePossible = []
-        if((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0)): # verif deguelasse mais ça marche
-            if((self.plateau[i+1][j-1] == pionAdverse or self.plateau[i+1][j-1] == dameAdverse) and self.plateau[i+2][j-2] == " "): # verifie si on peut manger le pion en diagonale haut gauche 
-                attaquePossible = [[i, j], 2, "+-"]
-        if(attaquePossible != []):
-            listeAttaquePossible.append(attaquePossible)
-        attaquePossible = []
-        
-        if(listeAttaquePossible != []):
-            listeCoordPossible = []
-            if(listeAttaquePossible != []):
-                for i in range(len(listeAttaquePossible)):
-                    if(listeAttaquePossible[i][2] == "++"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] + listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] + listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] + 1][listeAttaquePossible[i][0][1] + 1] = " "
-                    elif(listeAttaquePossible[i][2] == "+-"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] + listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] - listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] + 1][listeAttaquePossible[i][0][1] - 1] = " "
-                    else: 
-                        print("erreur")
-
-            for coord in listeCoordPossible:
-                test = self.verifierMangerHaut(coord[2], coord[3], plateau, cpt+1)
-                if(test == None and cpt == 0):
-                    tmpTab = [coord[2],coord[3], cpt]
-                    self.listePionManger.append(tmpTab)
-                    self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
-                elif(test == None):
-                    tmpTab = [coord[2],coord[3], cpt]
-                    self.listePionManger.append(tmpTab)
-                elif(cpt == 0):
-                    if(self.listePionManger != []):
-                        self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
-                    continue
-            return coord[0], coord[1]
-        else:
-            return None
-
-    def verifierMangerBas(self, i, j, plateau, cpt = 0):
-        pionAdverse = 'X'
-        dameAdverse = '%'
-        listeAttaquePossible = []
-        attaquePossible = []
-
-        if((i - 1 >= 0 and j + 1 < 10) and (i - 2 >= 0 and j + 2 < 10)): # verif deguelasse mais ça marche
-            if((self.plateau[i-1][j+1] == pionAdverse or self.plateau[i-1][j+1] == dameAdverse) and self.plateau[i-2][j+2] == " "): # verifie si on peut manger le pion en diagonale bas droite 
-                attaquePossible = [[i, j], 2, "-+"]
-        if(attaquePossible != []):
-            listeAttaquePossible.append(attaquePossible)
-        attaquePossible = []
-        if((i - 1 >= 0 and j - 1 >= 0) and (i - 2 >= 0 and j - 2 >= 0)): # verif deguelasse mais ça marche
-            if((self.plateau[i-1][j-1] == pionAdverse or self.plateau[i-1][j-1] == dameAdverse) and self.plateau[i-2][j-2] == " "): # verifie si on peut manger le pion en diagonale bas gauche
-                attaquePossible = [[i, j], 2, "--"]         
-        if(attaquePossible != []):
-            listeAttaquePossible.append(attaquePossible)
-        attaquePossible = []
-        
-        if(listeAttaquePossible != []):
-            listeCoordPossible = []
-            if(listeAttaquePossible != []):
-                for i in range(len(listeAttaquePossible)):
-                    if(listeAttaquePossible[i][2] == "--"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] - listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] - listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] - 1][listeAttaquePossible[i][0][1] - 1] = " "
-                    elif(listeAttaquePossible[i][2] == "-+"):
-                        x = listeAttaquePossible[i][0][0]
-                        y = listeAttaquePossible[i][0][1]
-                        nouvelleX = listeAttaquePossible[i][0][0] - listeAttaquePossible[i][1]
-                        nouvelleY = listeAttaquePossible[i][0][1] + listeAttaquePossible[i][1]
-                        tab = [x, y, nouvelleX, nouvelleY]
-                        listeCoordPossible.append(tab)
-                        plateau[listeAttaquePossible[i][0][0] - 1][listeAttaquePossible[i][0][1] + 1] = " "
-                    else: 
-                        print("erreur")
-    
-            for coord in listeCoordPossible:
-                test = self.verifierMangerBas(coord[2], coord[3], plateau, cpt+1)
-                if(test == None and cpt == 0):
-                    tmpTab = [coord[2],coord[3], cpt]
-                    self.listePionManger.append(tmpTab)
-                    self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
-                elif(test == None):
-                    tmpTab = [coord[2],coord[3], cpt]
-                    self.listePionManger.append(tmpTab)
-                elif(cpt == 0):
-                    if(self.listePionManger != []):
-                        self.listeCopiePlateau.append([plateau, coord[0], coord[1], self.listePionManger[0][0], self.listePionManger[0][1]])
-                    continue
-            return coord[0], coord[1]
-        else:
-            return None    
-
-    def verifierMangerDames(self, i, j, dame, plateau = None, cpt = 0):
-        if(dame == "%"):
+    def verifierMangerDames(self, i, j, joueur, plateau = None, cpt = 0):
+        if(joueur.pion == "X"):
             pionAdverse = 'O'
             dameAdverse = '8'
         else: 
@@ -239,25 +140,25 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         listeAttaquePossible = []
         attaquePossible = []
 
-        if(((i - 1 >= 0 and j + 1 < 10) and (i - 2 >= 0 and j + 2 < 10))): # verif deguelasse mais ça marche
+        if(((i - 1 >= 0 and j + 1 < 10) and (i - 2 >= 0 and j + 2 < 10))): # verification du dépacement du tableau 
             if((plateau[i-1][j+1] == pionAdverse or plateau[i-1][j+1] == dameAdverse) and self.plateau[i-2][j+2] == " "): # verifie si on peut manger le pion en diagonale bas droite 
                 attaquePossible = [[i, j], 2, "-+"]
         if(attaquePossible != []):
             listeAttaquePossible.append(attaquePossible)
         attaquePossible = []
-        if(((i - 1 >= 0 and j - 1 >= 0) and (i - 2 >= 0 and j - 2 >= 0))): # verif deguelasse mais ça marche
+        if(((i - 1 >= 0 and j - 1 >= 0) and (i - 2 >= 0 and j - 2 >= 0))): 
             if((plateau[i-1][j-1] == pionAdverse or plateau[i-1][j-1] == dameAdverse) and plateau[i-2][j-2] == " "): # verifie si on peut manger le pion en diagonale bas gauche
                 attaquePossible = [[i, j], 2, "--"]         
         if(attaquePossible != []):
             listeAttaquePossible.append(attaquePossible)
         attaquePossible = []
-        if(((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)) ): # verif deguelasse mais ça marche
+        if(((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)) ):
             if((plateau[i+1][j+1] == pionAdverse or plateau[i+1][j+1] == dameAdverse) and plateau[i+2][j+2] == " "): # verifie si on peut manger le pion en diagonale haut droite 
                 attaquePossible = [[i, j], 2, "++"]
         if(attaquePossible != []):
             listeAttaquePossible.append(attaquePossible)
         attaquePossible = []
-        if(((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0))): # verif deguelasse mais ça marche
+        if(((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0))):
             if((plateau[i+1][j-1] == pionAdverse or plateau[i+1][j-1] == dameAdverse) and plateau[i+2][j-2] == " "): # verifie si on peut manger le pion en diagonale haut gauche 
                 attaquePossible = [[i, j], 2, "+-"]
         if(attaquePossible != []):
@@ -303,7 +204,7 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                     else: 
                         print("erreur")
             for coord in listeCoordPossible:
-                test = self.verifierMangerDames(coord[2], coord[3], dame, plateau, cpt+1)
+                test = self.verifierMangerDames(coord[2], coord[3], joueur, plateau, cpt+1)
                 if(test == None and cpt == 0):
                     tmpTab = [coord[2],coord[3], cpt]
                     self.listePionManger.append(tmpTab)
@@ -319,7 +220,6 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         else:
             return None
 
-
     # Vérifie si un pion peut mangé un autre pion
     def verifierManger(self, joueur):
         listeAttaquePossible = []
@@ -328,21 +228,21 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 for j in range(len(self.plateau)): # pour chaque case du plateau on vérifie si un pion peut manger un ou plusieurs pions
                     if(self.plateau[i][j] == joueur.pion and joueur.pion == "X"): # test pour les pions "O"
                         copieTmpPlateau = copy.deepcopy(self.plateau)
-                        self.verifierMangerHaut(i, j, copieTmpPlateau)
+                        self.verifierMangerDames(i, j, joueur,copieTmpPlateau)
                         if(self.listePionManger != [] or self.listePionManger != None):
                             for coords in self.listePionManger:
                                 listeAttaquePossible.append(coords) # sauvegarde des coordonnées destions des pions qui peuvent manger
                         self.listePionManger = []
                     if(self.plateau[i][j] == joueur.pion and joueur.pion == "O"): # test pour les pions "X"
                         copieTmpPlateau = copy.deepcopy(self.plateau)
-                        self.verifierMangerBas(i, j,copieTmpPlateau)
+                        self.verifierMangerDames(i, j, joueur,copieTmpPlateau)
                         if(self.listePionManger != [] or self.listePionManger != None):
                             for coords in self.listePionManger:
                                 listeAttaquePossible.append(coords)     
                         self.listePionManger = []
                     if(self.plateau[i][j] == joueur.dame and (joueur.dame == "%" or joueur.dame == "8")): # test pour les dames
                         copieTmpPlateau = copy.deepcopy(self.plateau)
-                        self.verifierMangerDames(i, j, joueur.dame,copieTmpPlateau)
+                        self.verifierMangerDames(i, j, joueur, copieTmpPlateau)
                         if(self.listePionManger != [] or self.listePionManger != None):
                             for coords in self.listePionManger:
                                 listeAttaquePossible.append(coords)     
@@ -368,7 +268,7 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 if(plateau[3] == attaque[0] and plateau[4] == attaque[1]):
                     self.plateau[plateau[1]][plateau[2]] = colors.FAIL + plateau[0][plateau[1]][plateau[2]] + colors.ENDC #affiche le pion en rouge
                     self.plateau[plateau[3]][plateau[4]] = colors.FAIL + u"\u2588" + colors.ENDC # affiche un carré rouge
-
+        
         return listeAttaquePlusForte
             
     # Déplace un pion sur le plateau et met la case d'origine à vide
@@ -376,6 +276,12 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         if self.verifierDeplacement(joueur, x, y, nouvelleX, nouvelleY) == True:
             self.plateau[nouvelleX][nouvelleY] = self.plateau[x][y]
             self.plateau[x][y] = " "
+            return True
+        print("Les coordonnées ne correspondent pas à un déplacement possible, entrer de nouvelles coordonnées")
+        x, y = input("Entrer les coordonnées de départ du pion à déplacer : ").split()
+        nouveauX, nouveauY = input("Entrer les coordonnées d'arrivée du pion à déplacer : ").split()
+        self.bougerPion(joueur, int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)  
+        
 
     def manger(self, x, y , nouvelleX, nouvelleY):
         for plateau in self.listeCopiePlateau:
@@ -384,19 +290,15 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 self.plateau[nouvelleX][nouvelleY] = plateau[0][x][y]
                 self.plateau[x][y] = " "
                 self.listeCopiePlateau = []
+                return True
+        print("Les coordonnées ne correspondent pas à une attaque possible, entrer de nouvelles coordonnées")
+        x, y = input("Entrer les coordonnées de départ du pion à déplacer : ").split()
+        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion sélectionné : ").split()
+        self.manger(int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)
 
-            
-
-            
-        
-            
-
-
-    
-
-    
-
-
-        
-                
-        
+    def checkDefaite(self, joueur):
+        for i in range(len(self.plateau)):
+            for j in range(len(self.plateau)):
+                if(self.plateau[i][j] == joueur.pion or self.plateau[i][j] == joueur.dame):
+                    return False
+        return True
