@@ -10,18 +10,8 @@ class Score:
     #file_path = absolute_path + '\TableauJoueurs.json'
     
     def __init__(self, nom, pion):
-        self.nom = nom
-        self.nombreVictoires = 0
-        self.joueursBattus = []
-        self.pion = pion
         self.jsonData = JsonManager('Data/Parties.json')
         self.parties = self.jsonData.data
-        if(pion == "X"):
-            self.dame = "%"
-            self.tour = False
-        else:
-            self.dame = "8"
-            self.tour = True
         
     def score(self):
         print("aled")
