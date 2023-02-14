@@ -3,6 +3,7 @@ import os
 from Classes.Plateau import Plateau
 from Classes.JsonManager import JsonManager 
 import re
+import json
 import logging
 import config_email
 import smtplib
@@ -10,6 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email import encoders
 from email.mime.base import MIMEBase
+from email.mime.application import MIMEApplication
 from Classes.Plateau import Plateau
 from Classes.Joueur import Joueur
 
@@ -25,6 +27,7 @@ def menu():
         print("Tapez 1 pour lancer une nouvelle partie")
         print("Tapez 2 pour lancer une ancienne partie")
         print("Tapez 3 pour envoyer le tableau des scores par mail")
+        print("Tapez 4 pour quitter le jeu sans sauvergarder")
         try:
             choix = int(input("Votre choix : "))
             if choix==1:
@@ -32,7 +35,11 @@ def menu():
             elif choix==2:
                 get_old_game()
             elif choix==3:
-                send_mail()
+                send_json_email()
+            elif choix==4:
+                logging.info('Menu function: Quitting the game')
+                print("Merci d'avoir joué, à bientôt !")
+                sys.exit()
             else:
                 print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
                 logging.error('Menu function: choix invalide')
@@ -40,125 +47,121 @@ def menu():
             print("Choix non valide, veuillez saisir un nombre entre 1 et 4")
             logging.error('Menu function: choix invalide')
 
+def send_json_email():
+    # Ouvrir et charger le fichier JSON
+    try:
+        with open("json.json", 'r') as f:
+            json_data = json.load(f)
+    except FileNotFoundError:
+        print("Le fichier n'a pas été trouvé.")
+        return
+    except json.JSONDecodeError:
+        print("Le fichier n'est pas un fichier JSON valide.")
+        return
 
-#A tester - pas encore fonctionnel
-def read_file_content(file_path):
-    json_manager = JsonManager(file_path)
-    return json_manager.getData()
+    recipient_email = input("Entrez l'adresse mail du destinataire : ")
 
-def send_mail(mail_destinataire, sujet="Tableau des scores", message=""):
-    read_file_content()
-    multipart_message = MIMEMultipart()
-    multipart_message["Subject"] = sujet
-    multipart_message["From"] = config_email.config_email
-    multipart_message["To"] = mail_destinataire
+    # Construire le message email
+    msg = MIMEMultipart()
+    source = "childerikdegascogne@gmail.com"
+    password = "trlxuhvuewfddheq"
+    msg['From'] = source 
+    msg['To'] = recipient_email
+    msg['Subject'] = "Fictif"
+    print(json_data)
 
-    multipart_message.attach(MIMEText(message, "plain"))
+    # Ajouter le contenu du fichier JSON au message
+    json_attachment = MIMEApplication(json.dumps(json_data), _subtype='json')
+    json_attachment.add_header('Content-Disposition', 'attachment', filename="Tableau des scores")
+    msg.attach(json_attachment)
 
-    serveur_mail = smtplib.SMTP(
-        config_email.config_server, config_email.config_server_port)
-    serveur_mail.starttls()
-    serveur_mail.login(config_email.config_email, config_email.config_password)
-    serveur_mail.sendmail(config_email.config_email,
-                          mail_destinataire, multipart_message.as_string())
-    serveur_mail.quit()
+    # Envoyer l'email
+    try:
+        smtp = smtplib.SMTP("smtp.gmail.com", 587)
+        smtp.starttls()
+        smtp.login(source, password)
+        smtp.sendmail(source, recipient_email, msg.as_string())
+        print("E-mail envoyé avec succès!")
+        print("\n")
+        print("Retour au menu")
+    except smtplib.SMTPException as e:
+        print("Echec de l'envoi de l'e-mail :", e)
 
-
-def get_old_game(id):
+def get_old_game():
     logging.info("Ancienne partie")
     print("Quelle partie voulez-vous charger ? Donnez l'id de la partie")
-    choix = input("ID : ")
+    id = int(input("ID : "))
     plateau = Plateau(2,id)
     jouer(plateau)
 
 def get_new_game():
     logging.info("Nouvelle partie")
     plateau = Plateau(1)
-    joueur1 = input("Entrer le nom du premier joueur :")
-    joueur2 = input("Entrer le nom du deuxième joueur :")
-    joueur1 = Joueur(joueur1, "X")
-    joueur2 = Joueur(joueur2, "O")
-    jouer(plateau, joueur1, joueur2)
+    jouer(plateau)
 
-def jouer(plateau, joueur1, joueur2):
+def jouer(plateau):
     print("")
-    if(joueur1.tour == True):
-        print("Tour de " + joueur1.nom + ", il joue avec les "+joueur1.pion)
+    if(plateau.joueur1.tour == True):
+        if(plateau.checkDefaite(plateau.joueur1)):
+            print("Fin de la partie, "+plateau.joueur2.nom+" a gagné !")
+            plateau.savePlateau(plateau.joueur2.nom) # le 4e argument est le joueur qui a gagné
+            return 0
+        print("Tour de " + plateau.joueur1.nom + ", il joue avec les "+plateau.joueur1.pion)
     else:
-        print("Tour de " + joueur2.nom + ", il joue avec les "+joueur2.pion)
+        if(plateau.checkDefaite(plateau.joueur2)):
+            print("Fin de la partie, "+plateau.joueur1.nom+" a gagné !")
+            plateau.savePlateau(plateau.joueur1.nom)
+            return 0
+        print("Tour de " + plateau.joueur2.nom + ", il joue avec les "+plateau.joueur2.pion)
+
     print("Taper 1 pour jouer votre tour")
     print("Taper 2 pour quitter et enregistrer la partie")
     print("Taper 3 pour abandonner la partie")
+    print("Taper 4 pour revenir au menu")
     choix = int(input("Votre choix : "))
     if(choix == 1):
-        jouer_tour(plateau, joueur1, joueur2)
+        jouer_tour(plateau)
     elif(choix == 2):
-        plateau.savePlateau(joueur1, joueur2)
+        plateau.savePlateau()
         return 0
     elif(choix == 3):
-        if(joueur1.tour == True):
-            plateau.savePlateau(joueur1, joueur2, joueur2.nom)
+        if(plateau.joueur1.tour == True):
+            plateau.savePlateau(plateau.joueur2.nom)
         else:
-            plateau.savePlateau(joueur1, joueur2, joueur1.nom)
+            plateau.savePlateau(plateau.joueur1.nom)
+    elif(choix == 4):
+        return 0
     else:
         print("Choix non valide, veuillez saisir un nombre entre 1 et 3")
         logging.error('Menu function: choix invalide')
-        jouer(plateau, joueur1, joueur2)
+        jouer(plateau)
 
-def jouer_tour(plateau, joueur1, joueur2):
-    if(joueur1.tour == True):
-        if(plateau.checkDefaite(joueur1)):
-            print("Fin de la partie, "+joueur2.nom+" a gagné !")
-            plateau.savePlateau(plateau, joueur1, joueur2, joueur2) # le 4e argument est le joueur qui a gagné
-            return 0
-        joueur = joueur1
-        joueur1.tour = False
-        joueur2.tour = True
+def jouer_tour(plateau):
+    if(plateau.joueur1.tour == True):
+        joueur = plateau.joueur1
+        plateau.joueur1.tour = False
+        plateau.joueur2.tour = True
     else:
-        if(plateau.checkDefaite(joueur2)):
-            print("Fin de la partie, "+joueur1.nom+" a gagné !")
-            plateau.savePlateau(plateau, joueur1, joueur2, joueur1)
-            return 0
-        joueur = joueur2
-        joueur1.tour = True
-        joueur2.tour = False
+        joueur = plateau.joueur2
+        plateau.joueur1.tour = True
+        plateau.joueur2.tour = False
 
     listePionAManger = plateau.verifierManger(joueur)
     if(listePionAManger != []):
         plateau.afficherPlateau()
         x, y = input("Entrer les coordonnées de départ du pion à déplacer : ").split()
-        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion séléectionné : ").split()
+        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion sélectionné : ").split()
         plateau.manger(int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)
         plateau.afficherPlateau()
-        jouer(plateau, joueur1, joueur2)
+        jouer(plateau)
     else:
         plateau.afficherPlateau()
         print("Vous ne pouvez pas manger, vous devez donc déplacer un pion")
         x, y = input("Entrer les coordonnées de départ du pion à déplacer : ").split()
-        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion séléectionné : ").split()
+        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion sélectionné : ").split()
         plateau.bougerPion(joueur,int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)
         plateau.afficherPlateau()
-        jouer(plateau, joueur1, joueur2)
-
-
-def leave_game():
-    logging.info("Bienvenue dans le jeu de dame")
-    while True:
-        logging.info("Tapez 1 pour sauvegarder la partie puis quitter le jeu")
-        logging.info("Tapez 2 pour quitter le jeu sans sauvegarder")
-        try:
-            choix = int(input("Votre choix : "))
-            if choix==1:
-                #creation nouveau fichier où sauvegarder la partie
-                menu() #quitter le jeu - retour au menu
-            elif choix==2: #pas de sauvegarde
-                exit()
-            else:
-                logging.error("Choix non valide")
-        except ValueError:
-            logging.error("Choix non valide, veuillez saisir un nombre entre 1 et 2")
-            logging.info("Vous avez quitter le jeu")
-            
+        jouer(plateau)            
 
 def valid_email(email):
     try:
@@ -170,10 +173,6 @@ def valid_email(email):
     except Exception as e:
         logging.error(e)
     return e
-
-def finPartie(plateau, joueur):
-    print("Fin de la partie, "+joueur.nom+" a gagné !")
-    
 
 
 

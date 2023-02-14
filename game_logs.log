@@ -193,3 +193,82 @@
 2023-02-13 23:27:35,009:INFO:Nouvelle partie
 2023-02-13 23:35:31,194:INFO:Menu function: Welcome to the checkers game
 2023-02-13 23:35:32,418:INFO:Nouvelle partie
+2023-02-14 11:07:32,631:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:07:34,342:INFO:Nouvelle partie
+2023-02-14 11:08:10,855:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:08:12,370:INFO:Nouvelle partie
+2023-02-14 11:08:58,849:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:08:59,842:INFO:Nouvelle partie
+2023-02-14 11:09:48,867:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:10:27,890:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:10:30,300:INFO:Ancienne partie
+2023-02-14 11:10:56,734:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:10:58,508:INFO:Ancienne partie
+2023-02-14 11:12:19,948:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:12:21,430:INFO:Ancienne partie
+2023-02-14 11:17:15,789:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:17:17,175:INFO:Ancienne partie
+2023-02-14 11:18:51,682:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:21:05,338:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:21:07,162:INFO:Ancienne partie
+2023-02-14 11:23:00,425:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:23:01,802:INFO:Ancienne partie
+2023-02-14 11:36:45,178:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:36:47,126:INFO:Menu function: Quitting the game
+2023-02-14 11:36:48,907:INFO:Menu function: Welcome to the checkers game
+2023-02-14 11:36:50,589:INFO:Nouvelle partie
+2023-02-14 11:37:29,762:INFO:Menu function: Quitting the game
+2023-02-14 13:48:35,138:INFO:Menu function: Welcome to the checkers game
+2023-02-14 13:48:36,337:INFO:Nouvelle partie
+2023-02-14 13:49:29,094:INFO:Menu function: Welcome to the checkers game
+2023-02-14 13:49:29,723:INFO:Nouvelle partie
+2023-02-14 13:54:24,537:INFO:Menu function: Welcome to the checkers game
+2023-02-14 13:54:25,302:INFO:Nouvelle partie
+2023-02-14 13:56:18,804:INFO:Menu function: Welcome to the checkers game
+2023-02-14 13:56:19,569:INFO:Nouvelle partie
+2023-02-14 13:56:58,648:INFO:Menu function: Welcome to the checkers game
+2023-02-14 13:56:59,249:INFO:Nouvelle partie
+2023-02-14 13:58:10,777:INFO:Menu function: Welcome to the checkers game
+2023-02-14 13:58:11,785:INFO:Nouvelle partie
+2023-02-14 14:01:35,784:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:01:36,823:INFO:Nouvelle partie
+2023-02-14 14:03:35,662:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:03:36,270:INFO:Nouvelle partie
+2023-02-14 14:03:53,753:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:03:54,466:INFO:Nouvelle partie
+2023-02-14 14:06:26,296:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:06:26,895:INFO:Nouvelle partie
+2023-02-14 14:07:30,082:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:07:32,305:INFO:Nouvelle partie
+2023-02-14 14:10:46,540:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:10:47,152:INFO:Nouvelle partie
+2023-02-14 14:11:04,581:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:11:05,669:INFO:Nouvelle partie
+2023-02-14 14:11:41,144:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:11:42,087:INFO:Nouvelle partie
+2023-02-14 14:11:53,371:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:11:54,834:ERROR:Menu function: choix invalide
+2023-02-14 14:11:56,898:INFO:Nouvelle partie
+2023-02-14 14:12:26,762:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:12:28,261:INFO:Nouvelle partie
+2023-02-14 14:13:32,751:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:13:33,490:INFO:Nouvelle partie
+2023-02-14 14:14:39,415:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:14:40,001:INFO:Nouvelle partie
+2023-02-14 14:15:09,259:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:15:09,941:INFO:Nouvelle partie
+2023-02-14 14:21:02,532:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:21:03,270:INFO:Nouvelle partie
+2023-02-14 14:24:13,944:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:24:14,627:INFO:Nouvelle partie
+2023-02-14 14:25:30,486:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:25:31,236:INFO:Nouvelle partie
+2023-02-14 14:25:55,842:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:26:00,359:INFO:Nouvelle partie
+2023-02-14 14:26:33,819:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:26:35,589:INFO:Nouvelle partie
+2023-02-14 14:27:14,728:INFO:Menu function: Welcome to the checkers game
+2023-02-14 14:27:16,288:INFO:Nouvelle partie
+2023-02-14 14:27:24,374:ERROR:Menu function: choix invalide
+2023-02-14 14:27:27,807:ERROR:Menu function: choix invalide
+2023-02-14 14:27:40,492:INFO:Nouvelle partie

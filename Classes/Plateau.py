@@ -17,7 +17,11 @@ class Plateau (): # Classe pour gérer le plateau de jeu
             for partie in self.parties:
                 if partie['idPartie'] == idPartie:
                     plateau = copy.deepcopy(partie['Plateau']) # Copie du plateau de base pour ne pas le modifier
-                    self.plateau = plateau               
+                    self.plateau = plateau
+                    joueur1 = input("Entrer le nom du premier joueur :")
+                    joueur2 = input("Entrer le nom du deuxième joueur :")
+                    self.joueur1 = Joueur(joueur1, "X")
+                    self.joueur2 = Joueur(joueur2, "O")              
             if(self.plateau == []):
                 raise Exception("Le template à l'id 0 est introuvable")
         elif(choix == 2): #Génération du plateau à partir d'une partie existante
@@ -28,6 +32,14 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                         if partie['Vainqueur'] != "": # Si la partie est terminée
                             raise Exception("La partie est déjà terminée")
                         self.plateau = partie['Plateau']
+                        self.joueur1 = Joueur(partie['Joueur1'], "X")
+                        self.joueur2 = Joueur(partie['Joueur2'], "O")
+                        if partie['Tour'] == self.joueur1.nom:
+                            self.joueur1.tour = True
+                            self.joueur2.tour = False
+                        else:
+                            self.joueur1.tour = False
+                            self.joueur2.tour = True
                 if(self.plateau == []):
                     raise Exception("La partie n'existe pas, id introuvable")
             except Exception as e:
@@ -63,19 +75,19 @@ class Plateau (): # Classe pour gérer le plateau de jeu
             print("\n", end="")
 
 
-    def savePlateau(self,joueur1, joueur2, vainqueur = ""):
+    def savePlateau(self,vainqueur = ""):
         if(self.enCours == False): # Sauvegarde d'une nouvelle partie               
             idPartie = len(self.parties)
             jsonDataToSave = { # Dictionnaire temporaire pour sauvegarder les données
                 "idPartie": idPartie,
-                "Joueur1": joueur1.nom,
-                "Joueur2": joueur2.nom,
+                "Joueur1": self.joueur1.nom,
+                "Joueur2": self.joueur2.nom,
                 "Vainqueur": vainqueur,
             }
-            if joueur1.tour == True:
-                jsonDataToSave["Tour"] = joueur1.nom
+            if self.joueur1.tour == True:
+                jsonDataToSave["Tour"] = self.joueur1.nom
             else:
-                jsonDataToSave["Tour"] = joueur2.nom
+                jsonDataToSave["Tour"] = self.joueur2.nom
             jsonDataToSave["Plateau"] = self.plateau
 
             self.parties.append(jsonDataToSave) # Ajout du dictionnaire temporaire dans la liste des parties
@@ -86,14 +98,16 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 if partie['idPartie'] == self.idPartie:
                     partie['Plateau'] = self.plateau
                     partie['Vainqueur'] = vainqueur
-                    if joueur1.tour == True:
-                        partie['tour'] = joueur1.nom
+                    if self.joueur1.tour == True:
+                        partie['tour'] = self.joueur1.nom
                     else:
-                        partie['tour'] = joueur2.nom
+                        partie['tour'] = self.joueur2.nom
             self.json.save(self.parties) # Sauvegarde dans le fichier json
     
     # Vérifie si le pion peut être déplacé
-    def verifierDeplacement(self, joueur, x, y, nouvelleX, nouvelleY):     
+    def verifierDeplacement(self, joueur, x, y, nouvelleX, nouvelleY):
+        print("nouvelleY :"+str(nouvelleY)+" y : "+str(y))
+
         try:
             if(self.plateau[x][y] == " "):
                 raise Exception("La case d'origine est vide")
@@ -105,12 +119,12 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 raise Exception("Vous ne pouvez pas rester sur la même case")
             elif(x == nouvelleX or y == nouvelleY):
                 raise Exception("Vous ne pouvez déplacer votre pion qu'en diagonale")
-            #elif(joueur.pion == "O" and nouvelleY <= y):
-            #    raise Exception("Vous ne pouvez pas déplacer votre pion vers le bas")
-            #elif(joueur.pion == "X" and nouvelleY >= y):
-            #    raise Exception("Vous ne pouvez pas déplacer votre pion vers le haut")
-            #elif(abs(nouvelleX - x) or abs(nouvelleY - y) > 1):
-            #    raise Exception("Vous ne pouvez pas déplacer votre pion de plus d'une case")
+            elif(joueur.pion == "O" and nouvelleX > x):
+                raise Exception("Vous ne pouvez pas déplacer un pion O vers le bas")
+            elif(joueur.pion == "X" and nouvelleX < x):
+                raise Exception("Vous ne pouvez pas déplacer un pion X vers le haut")
+            elif(abs(nouvelleX - x) > 1 or abs(nouvelleY - y) > 1):
+                raise Exception("Vous ne pouvez pas déplacer votre pion de plus d'une case")
             elif(nouvelleX > len(self.plateau) or nouvelleY > len(self.plateau)):
                 raise Exception("Vous ne pouvez pas déplacer votre pion en dehors du plateau")
         except Exception as e:
@@ -128,25 +142,25 @@ class Plateau (): # Classe pour gérer le plateau de jeu
         listeAttaquePossible = []
         attaquePossible = []
 
-        if(((i - 1 >= 0 and j + 1 < 10) and (i - 2 >= 0 and j + 2 < 10))): # verif deguelasse mais ça marche
+        if(((i - 1 >= 0 and j + 1 < 10) and (i - 2 >= 0 and j + 2 < 10))): # verification du dépacement du tableau 
             if((plateau[i-1][j+1] == pionAdverse or plateau[i-1][j+1] == dameAdverse) and self.plateau[i-2][j+2] == " "): # verifie si on peut manger le pion en diagonale bas droite 
                 attaquePossible = [[i, j], 2, "-+"]
         if(attaquePossible != []):
             listeAttaquePossible.append(attaquePossible)
         attaquePossible = []
-        if(((i - 1 >= 0 and j - 1 >= 0) and (i - 2 >= 0 and j - 2 >= 0))): # verif deguelasse mais ça marche
+        if(((i - 1 >= 0 and j - 1 >= 0) and (i - 2 >= 0 and j - 2 >= 0))): 
             if((plateau[i-1][j-1] == pionAdverse or plateau[i-1][j-1] == dameAdverse) and plateau[i-2][j-2] == " "): # verifie si on peut manger le pion en diagonale bas gauche
                 attaquePossible = [[i, j], 2, "--"]         
         if(attaquePossible != []):
             listeAttaquePossible.append(attaquePossible)
         attaquePossible = []
-        if(((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)) ): # verif deguelasse mais ça marche
+        if(((i + 1 < 10 and j + 1 < 10) and (i + 2 < 10 and j + 2 < 10)) ):
             if((plateau[i+1][j+1] == pionAdverse or plateau[i+1][j+1] == dameAdverse) and plateau[i+2][j+2] == " "): # verifie si on peut manger le pion en diagonale haut droite 
                 attaquePossible = [[i, j], 2, "++"]
         if(attaquePossible != []):
             listeAttaquePossible.append(attaquePossible)
         attaquePossible = []
-        if(((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0))): # verif deguelasse mais ça marche
+        if(((i + 1 < 10 and j - 1 >= 0) and (i + 2 < 10 and j - 2 >= 0))):
             if((plateau[i+1][j-1] == pionAdverse or plateau[i+1][j-1] == dameAdverse) and plateau[i+2][j-2] == " "): # verifie si on peut manger le pion en diagonale haut gauche 
                 attaquePossible = [[i, j], 2, "+-"]
         if(attaquePossible != []):
@@ -281,7 +295,7 @@ class Plateau (): # Classe pour gérer le plateau de jeu
                 return True
         print("Les coordonnées ne correspondent pas à une attaque possible, entrer de nouvelles coordonnées")
         x, y = input("Entrer les coordonnées de départ du pion à déplacer : ").split()
-        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion séléectionné : ").split()
+        nouveauX, nouveauY =  input("Entrer les coordonées d'arriver du pion sélectionné : ").split()
         self.manger(int(x)-1, int(y)-1, int(nouveauX)-1, int(nouveauY)-1)
 
     def checkDefaite(self, joueur):
