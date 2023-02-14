@@ -3,7 +3,7 @@ import random
 import os
 
 
-class Joueurs:
+class Score:
     absolute_path = os.path.dirname(os.path.abspath(__file__))
     absolutePathParties = os.path.dirname(os.path.abspath(__file__))
     filePathParties = 'Data\Parties.json'
@@ -63,37 +63,6 @@ class Joueurs:
             for element in data:
                 print("Le joueur", element["Nom"], "a fait", element["NombreVictoires"], "victoires")
     
-    
-    def ecrireJson(self):
-        nombrePif = random.randint(0,1)
-        i = 1
-        print(nombrePif)
-        try:
-            
-            with open(self.file_path) as fichier:
-                data = json.load(fichier)
-                test = data
-                for element in test:
-
-                    if(element["Nom"] == "Bob" and nombrePif == 1):
-                        element["NombreVictoires"] = element["NombreVictoires"] + 1
-                    print("Les joueurs battus par " + element["Nom"],  "sont : " )
-                    if(i == 1):
-                        if(element["Nom"] == "Bob"):
-                            element["JoueursBattus"] = element["JoueursBattus"] + ["Gohrien"]
-
-                    if(element["Nom"] == "AAAAAAAAAAAAH" and nombrePif == 0):
-                        element["NombreVictoires"] += 1
-                        #print("Les joueurs battus par " + element["Nom"] + " sont : ")
-                            
-                    
-                    print("\n",element["JoueursBattus"], "\n")
-                
-        except:
-            print("Le fichier n'existe pas")
-
-        with open(self.file_path, "w") as fichier:
-            json.dump(test, fichier)
 
     def compter_battus(self):
         with open(self.file_path) as fichier:
@@ -176,29 +145,28 @@ class Joueurs:
             print("\n le joueur 2 vaut : \n", joueur2, "\n\n")
             
     
-    def tableauScore(self):
-        for partie in self.jsonData:
-            print(partie)
-            joueurs.afficherVictoires()
-            #joueurs.compter_battus()
-            #joueurs.ecrireJson()
-            #joueurs.ecrireJoueurs()
-            #joueurs.victoireDynamique()
+    def afficherTableau(self):
+         with open(self.file_path) as fichier:
+            data = json.load(fichier)
+            for element in data:
+                print(element)
+    
 
-joueurs = Joueurs("nom")
+score = Score("nom")
 
-if (joueurs.testerJson() == 0):
+if (score.testerJson() == 0):
     print("Le fichier n'existe pas")
 else:
-    #joueurs.afficherVictoires()
-    #joueurs.compter_battus()
-    #joueurs.ecrireJson()
-    #joueurs.ecrireJoueurs()
-    #joueurs.victoireDynamique()
-    #joueurs.afficherPartiesJson()
-    print(joueurs.getIdPartie())
-    print(joueurs.getJoueur1())
-    print(joueurs.getIdJoueur2())
-    print(joueurs.getVainqueur())
+    #score.afficherVictoires()
+    #score.compter_battus()
+    #score.ecrireJson()
+    #score.ecrireJoueurs()
+    #score.victoireDynamique()
+    #score.afficherPartiesJson()
+    #print(score.getIdPartie())
+    #print(score.getJoueur1())
+    #print(score.getIdJoueur2())
+    #print(score.getVainqueur())
+    #score.afficherTableau()
     print("Le fichier existe")
     

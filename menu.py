@@ -15,8 +15,12 @@ from email.mime.application import MIMEApplication
 from Classes.Plateau import Plateau
 from Classes.Joueur import Joueur
 from Classes.CreerJsonJoueurs import Score
+from Classes.Score import Score
 
 
+score = Score("nom")
+absolute_path = os.path.dirname(os.path.abspath(__file__))
+file_path = absolute_path + '\TableauJoueurs.json'
 
 
 def menu():
@@ -28,7 +32,7 @@ def menu():
         print("Tapez 1 pour lancer une nouvelle partie")
         print("Tapez 2 pour lancer une ancienne partie")
         print("Tapez 3 pour envoyer le tableau des scores par mail")
-        print("Tapez 4 pour envoyer le tableau des scores par mail")
+        print("Tapez 4 pour afficher le tableau des scores")
         print("Tapez 5 pour quitter le jeu sans sauvergarder")
         try:
             choix = int(input("Votre choix : "))
@@ -53,12 +57,23 @@ def menu():
 
 def tableauScore():
     logging.info("Tableau des scores")
-    score = Score()
-
+    score = Score("nom")
+    print("Pour afficher le tableau des scores tapez 1\n Pour afficher le tableau des victoires tapez 2\nPour afficher les joueurs vaincus tapez 3")
+    try:
+        choix = int(input("Votre choix : "))
+        if choix==1:
+            score.afficherTableau()
+        elif choix==2:
+            score.afficherVictoires()
+        elif choix == 3:
+            score.compter_battus()
+    except ValueError:
+            print("Choix non valide, veuillez saisir un nombre entre 1 et 3")
+            logging.error('Menu function: choix invalide')
 def send_json_email():
     # Ouvrir et charger le fichier JSON
     try:
-        with open("json.json", 'r') as f:
+        with open("Classes/TableauJoueurs.json", 'r') as f:
             json_data = json.load(f)
     except FileNotFoundError:
         print("Le fichier n'a pas été trouvé.")
